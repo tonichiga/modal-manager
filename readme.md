@@ -53,8 +53,6 @@ modal.call(modalAction.MODAL_PROMPT, {
 
 If desired, you can inherit from the Manager class to create your own classes for handling custom notifications, popups, and more. And then pass your custom class to the CustomProvider component using ModalProvider as an example
 
-````javascript
-
 ```javascript
 import { Manager } from "@4i/modal-manager";
 
@@ -63,7 +61,7 @@ class CustomManager extends Manager {
 }
 
 const customManager = new CustomManager();
-````
+```
 
 ### index.js
 
