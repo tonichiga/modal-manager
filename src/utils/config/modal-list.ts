@@ -1,5 +1,5 @@
 export interface ModalList {
-  [key: string]: string;
+  [key: string]: (...args: any[]) => any;
 }
 
 let modalList: ModalList = {};

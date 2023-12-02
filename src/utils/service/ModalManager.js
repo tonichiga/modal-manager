@@ -32,13 +32,13 @@ var ModalManager = /** @class */ (function (_super) {
     ModalManager.prototype.create = function (name, data) {
         this.name = name;
         this.data = data;
-        this.emitter.emit(constants.CHANGE);
+        this.emitChange();
     };
     ModalManager.prototype.call = function (name, data) {
         if (data === void 0) { data = {}; }
         this.create(name, { modalId: (0, uuid_1.v4)(), data: data });
     };
-    ModalManager.prototype.close = function (position) {
+    ModalManager.prototype.emitClose = function (position) {
         this.emitter.emit(constants.CLOSE, position);
     };
     return ModalManager;
