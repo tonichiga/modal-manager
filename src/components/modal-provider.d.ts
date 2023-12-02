@@ -1,5 +1,4 @@
 import React from "react";
-import "./backdrop.css";
 interface ModalProviderProps {
     CustomComponent?: React.ComponentType;
 }

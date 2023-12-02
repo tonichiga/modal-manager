@@ -48,7 +48,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importStar(require("react"));
 var ModalManager_1 = __importDefault(require("../utils/service/ModalManager"));
-require("./backdrop.css");
 var ModalManager_2 = __importDefault(require("../utils/service/ModalManager"));
 var modal_list_1 = __importDefault(require("../utils/config/modal-list"));
 var ModalProvider = function (_a) {

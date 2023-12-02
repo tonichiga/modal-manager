@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import manager from "../utils/service/ModalManager";
-import "./backdrop.css";
 import modal from "../utils/service/ModalManager";
 import modalList from "../utils/config/modal-list";
 
