@@ -14,7 +14,7 @@ class ModalManager extends Manager {
   create(name: string, data: { [key: string]: any }) {
     this.name = name;
     this.data = data;
-    this.emitter.emit(constants.CHANGE);
+    this.emitter.emit(constants.CHANGE, this.name, this.data);
   }
 
   call(name: string, data: any = {}) {
