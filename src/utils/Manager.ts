@@ -1,10 +1,5 @@
 import { EventEmitter } from "events";
 
-const constants = {
-  CHANGE: "change",
-  CLOSE: "close",
-};
-
 type TData = {
   [key: string]: any;
 };
@@ -26,17 +21,6 @@ class Manager {
 
   removeEventListener(event: string, listener: (...args: any[]) => void) {
     this.emitter.removeListener(event, listener);
-  }
-  emitChange() {
-    this.emitter.emit(constants.CHANGE, this.name, this.data);
-  }
-  close(...closeList: number[]) {
-    this.name = null;
-    this.data = {};
-    this.emitClose(closeList);
-  }
-  emitClose<T>(closeList?: T) {
-    this.emitter.emit(constants.CLOSE, closeList);
   }
 }
 

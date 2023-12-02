@@ -9,8 +9,5 @@ declare class Manager {
     constructor();
     addEventListener(event: string, listener: (...args: any[]) => void): void;
     removeEventListener(event: string, listener: (...args: any[]) => void): void;
-    emitChange(): void;
-    close(...closeList: number[]): void;
-    emitClose<T>(closeList?: T): void;
 }
 export default Manager;

@@ -14,14 +14,14 @@ class ModalManager extends Manager {
   create(name: string, data: { [key: string]: any }) {
     this.name = name;
     this.data = data;
-    this.emitChange();
+    this.emitter.emit(constants.CHANGE, this.name, this.data);
   }
 
   call(name: string, data: any = {}) {
     this.create(name, { modalId: uuidv4(), data });
   }
 
-  emitClose<T>(position?: T) {
+  close<T>(position?: T) {
     this.emitter.emit(constants.CLOSE, position);
   }
 }

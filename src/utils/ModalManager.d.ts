@@ -5,7 +5,7 @@ declare class ModalManager extends Manager {
         [key: string]: any;
     }): void;
     call(name: string, data?: any): void;
-    emitClose<T>(position?: T): void;
+    close<T>(position?: T): void;
 }
 declare const modal: ModalManager;
 export default modal;

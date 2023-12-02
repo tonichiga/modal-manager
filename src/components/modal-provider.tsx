@@ -1,19 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
-import manager from "../utils/service/ModalManager";
-import modal from "../utils/service/ModalManager";
-import modalList from "../utils/config/modal-list";
+import manager from "../utils/ModalManager";
+import modal from "../utils/ModalManager";
+
+type ModalList = { [key: string]: React.ComponentType };
 
 interface ModalProviderProps {
   CustomComponent?: React.ComponentType;
+  modalList: ModalList;
 }
 
 type TData = { [key: string]: any };
 
-const ModalProvider = ({ CustomComponent }: ModalProviderProps) => {
+const ModalProvider = ({ CustomComponent, modalList }: ModalProviderProps) => {
   const [data, setData] = useState<TData[]>([]);
   const [names, setNames] = useState<string[]>([]);
   const modalRef = useRef<any[]>([]);
 
+  console.log("OPEN MODAL", names, data, modalList);
   useEffect(() => {
     const handleOpenModal = (name: string, data: TData) => {
       setData((prev: TData[]) => [...prev, data]);
@@ -68,6 +71,7 @@ const ModalProvider = ({ CustomComponent }: ModalProviderProps) => {
   });
 
   const handleCloseModal = (index: number, e: any) => {
+    console.log(index);
     if (
       modalRef.current[index] &&
       !modalRef.current[index].contains(e.target)
@@ -86,27 +90,22 @@ const ModalProvider = ({ CustomComponent }: ModalProviderProps) => {
       const Modal = Component;
 
       return (
-        <>
-          {CustomComponent ? (
-            <CustomComponent key={i} {...data[i]} />
-          ) : (
+        <div
+          key={i}
+          onClick={(e) => {
+            handleCloseModal(i, e);
+          }}
+        >
+          <div className="backdrop_modal_manager">
             <div
-              key={i}
-              className="backdrop_modal_manager"
-              onClick={(e) => {
-                handleCloseModal(i, e);
+              ref={(ref) => {
+                refReducer(i, ref);
               }}
             >
-              <div
-                ref={(ref) => {
-                  refReducer(i, ref);
-                }}
-              >
-                <Modal key={i} {...data[i]} />
-              </div>
+              <Modal key={i} {...data[i]} />
             </div>
-          )}
-        </>
+          </div>
+        </div>
       );
     })
   );
