@@ -15,6 +15,16 @@ npm install @4i/modal-manager
 
 ## Usage
 
+#### Instance methods:
+
+##### .call(action, props)
+
+Call a modal by its action name and pass props to it.
+
+##### .close()
+
+Close all modals.
+
 #### Define Modal Actions:
 
 In your project, define modal actions as keys in the modalAction object. Each key represents a specific modal or UI element.
@@ -131,14 +141,19 @@ export default App;
 
 ```javascript
 import React from "react";
+import { modal } from "@4i/modal-manager";
 
 // Get props
 const ModalPrompts = ({ title, content }) => {
+  const handleClose = () => {
+    modal.close();
+  };
+
   return (
     <div className="w-[400px] h-[300px] bg-slate-50 p-[24px] flex flex-col justify-center items-center">
       <h1>{title}</h1>
       <p>{content}</p>
-      <button>Close</button>
+      <button onClick={handleClose}>Close</button>
     </div>
   );
 };
