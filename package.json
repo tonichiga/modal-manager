@@ -1,6 +1,6 @@
 {
   "name": "@4i/modal-manager",
-  "version": "1.0.114",
+  "version": "1.0.115",
   "description": "",
   "main": "src/index.ts",
   "scripts": {
@@ -14,7 +14,9 @@
   },
   "keywords": [
     "modal",
-    "manager"
+    "manager",
+    "react",
+    "typescript"
   ],
   "author": "Toni",
   "license": "ISC",
