@@ -19,7 +19,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Manager_1 = __importDefault(require("./Manager"));
-var uuid_1 = require("uuid");
+function uniqueID() {
+    return Math.floor(Math.random() * Date.now());
+}
 var constants = {
     CHANGE: "change",
     CLOSE: "close",
@@ -36,7 +38,7 @@ var ModalManager = /** @class */ (function (_super) {
     };
     ModalManager.prototype.call = function (name, data) {
         if (data === void 0) { data = {}; }
-        this.create(name, { modalId: (0, uuid_1.v4)(), data: data });
+        this.create(name, { modalId: uniqueID(), data: data });
     };
     ModalManager.prototype.close = function (position) {
         this.emitter.emit(constants.CLOSE, position);
