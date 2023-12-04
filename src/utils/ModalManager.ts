@@ -1,5 +1,8 @@
 import Manager from "./Manager";
-import { v4 as uuidv4 } from "uuid";
+
+function uniqueID() {
+  return Math.floor(Math.random() * Date.now());
+}
 
 const constants = {
   CHANGE: "change",
@@ -18,7 +21,7 @@ class ModalManager extends Manager {
   }
 
   call(name: string, data: any = {}) {
-    this.create(name, { modalId: uuidv4(), data });
+    this.create(name, { modalId: uniqueID(), data });
   }
 
   close<T>(position?: T) {
