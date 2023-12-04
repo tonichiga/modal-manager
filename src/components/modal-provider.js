@@ -50,11 +50,10 @@ var react_1 = __importStar(require("react"));
 var ModalManager_1 = __importDefault(require("../utils/ModalManager"));
 var ModalManager_2 = __importDefault(require("../utils/ModalManager"));
 var ModalProvider = function (_a) {
-    var CustomComponent = _a.CustomComponent, modalList = _a.modalList;
+    var modalList = _a.modalList;
     var _b = (0, react_1.useState)([]), data = _b[0], setData = _b[1];
     var _c = (0, react_1.useState)([]), names = _c[0], setNames = _c[1];
     var modalRef = (0, react_1.useRef)([]);
-    console.log("OPEN MODAL", names, data, modalList);
     (0, react_1.useEffect)(function () {
         var handleOpenModal = function (name, data) {
             setData(function (prev) { return __spreadArray(__spreadArray([], prev, true), [data], false); });
@@ -111,17 +110,17 @@ var ModalProvider = function (_a) {
     var refReducer = function (index, value) {
         modalRef.current[index] = value;
     };
-    return (activeModals.length !== 0 &&
-        activeModals.map(function (Component, i) {
-            var Modal = Component;
-            return (react_1.default.createElement("div", { key: i, onClick: function (e) {
+    return (data.length !== 0 &&
+        data.map(function (item, i) {
+            var Modal = activeModals[i] || (function () { return react_1.default.createElement(react_1.default.Fragment, null); });
+            return (react_1.default.createElement("div", { key: item.modalId, onClick: function (e) {
                     handleCloseModal(i, e);
                 } },
                 react_1.default.createElement("div", { className: "backdrop_modal_manager" },
                     react_1.default.createElement("div", { ref: function (ref) {
                             refReducer(i, ref);
                         } },
-                        react_1.default.createElement(Modal, __assign({ key: i }, data[i]))))));
+                        react_1.default.createElement(Modal, __assign({}, item.data))))));
         }));
 };
 exports.default = ModalProvider;

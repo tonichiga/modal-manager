@@ -2,21 +2,19 @@ import React, { useEffect, useRef, useState } from "react";
 import manager from "../utils/ModalManager";
 import modal from "../utils/ModalManager";
 
-type ModalList = { [key: string]: React.ComponentType };
+export type ModalList = { [key: string]: React.ComponentType };
 
 interface ModalProviderProps {
-  CustomComponent?: React.ComponentType;
   modalList: ModalList;
 }
 
 type TData = { [key: string]: any };
 
-const ModalProvider = ({ CustomComponent, modalList }: ModalProviderProps) => {
+const ModalProvider = ({ modalList }: ModalProviderProps) => {
   const [data, setData] = useState<TData[]>([]);
   const [names, setNames] = useState<string[]>([]);
   const modalRef = useRef<any[]>([]);
 
-  console.log("OPEN MODAL", names, data, modalList);
   useEffect(() => {
     const handleOpenModal = (name: string, data: TData) => {
       setData((prev: TData[]) => [...prev, data]);
@@ -85,13 +83,13 @@ const ModalProvider = ({ CustomComponent, modalList }: ModalProviderProps) => {
   };
 
   return (
-    activeModals.length !== 0 &&
-    activeModals.map((Component, i) => {
-      const Modal = Component;
+    data.length !== 0 &&
+    data.map((item, i) => {
+      const Modal = activeModals[i] || (() => <></>);
 
       return (
         <div
-          key={i}
+          key={item.modalId}
           onClick={(e) => {
             handleCloseModal(i, e);
           }}
@@ -102,7 +100,7 @@ const ModalProvider = ({ CustomComponent, modalList }: ModalProviderProps) => {
                 refReducer(i, ref);
               }}
             >
-              <Modal key={i} {...data[i]} />
+              <Modal {...item.data} />
             </div>
           </div>
         </div>
