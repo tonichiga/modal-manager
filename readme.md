@@ -129,11 +129,14 @@ export default customModalManager;
 ```javascript
 import { memo, useEffect, useRef, useState } from "react";
 import bottomModal, { constants } from "../../service/BottomModal";
+import widgets from "../../config/modal/modal-list";
 
-const BottomModalProvider = ({ modalList }) => {
-  const [data, setData] = useState({
-    data: null,
-  });
+const initialData = {
+  data: null,
+};
+
+const BottomModalProvider = () => {
+  const [data, setData] = useState(initialData);
   const [name, setName] = useState < string > null;
   const modalRef = useRef < HTMLDivElement > null;
 
@@ -145,8 +148,9 @@ const BottomModalProvider = ({ modalList }) => {
     }
 
     function handleClose() {
+      console.log("LOG", "close");
       setName(null);
-      setData(null);
+      setData(initialData);
     }
 
     bottomModal.addEventListener(constants.OPEN, handleOpenModal);
@@ -160,20 +164,26 @@ const BottomModalProvider = ({ modalList }) => {
 
   const handleCloseModal = (e: any) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
+      console.log("LOG", "close");
       bottomModal.close();
     }
   };
 
-  const Widget = modalList[name];
+  const Widget = widgets[name];
 
   return (
-    <div>
+    <>
       {name && Widget && (
-        <div className="fixed z-[1000] left-0 right-0 bottom-0 animate-fromBottom">
-          <Widget {...data.data} />
+        <div
+          onClick={handleCloseModal}
+          className="animate-backdrop fixed z-[1000] h-full w-full  overflow-hidden flex items-end"
+        >
+          <div className="animate-fromBottom w-full" ref={modalRef}>
+            <Widget {...data.data} />
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
