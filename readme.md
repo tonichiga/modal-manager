@@ -21,9 +21,29 @@ npm install @4i/modal-manager
 
 Call a modal by its action name and pass props to it.
 
-##### .close()
+##### .close('all')
 
 Close all modals.
+
+##### .close(-1)
+
+Close last modals.
+
+##### .close(0)
+
+Close first modals.
+
+##### .close() (default)
+
+Close last modals.
+
+##### .addEventListener(event, callback)
+
+Add an event listener to the modal manager.
+
+##### .removeEventListener(event, callback)
+
+Remove an event listener from the modal manager.
 
 #### Define Modal Actions:
 
@@ -66,11 +86,98 @@ If desired, you can inherit from the Manager class to create your own classes fo
 ```javascript
 import { Manager } from "@4i/modal-manager";
 
-class CustomManager extends Manager {
-  // Custom methods and logic here
+import { Manager } from "@4i/modal-manager";
+import { v4 as uuidv4 } from "uuid";
+
+export const constants = {
+  OPEN: "open-bottom-modal",
+  CLOSE: "close-bottom-modal",
+};
+
+class CustomModalManager extends Manager {
+  name: string;
+  data: any;
+
+  constructor() {
+    super();
+    this.name = "";
+    this.data = {};
+  }
+
+  create(name: string, data) {
+    this.name = name;
+    this.data = data;
+    this.emitter.emit(constants.OPEN, this.name, this.data);
+  }
+
+  call(name: string, data: any = {}) {
+    this.create(name, { modalId: uuidv4(), data });
+  }
+
+  close(position?: number | string) {
+    this.emitter.emit(constants.CLOSE, position);
+  }
 }
 
-const customManager = new CustomManager();
+const customModalManager = new CustomModalManager();
+
+export default customModalManager;
+```
+
+#### Custom Provider
+
+```javascript
+import { memo, useEffect, useRef, useState } from "react";
+import bottomModal, { constants } from "../../service/BottomModal";
+
+const BottomModalProvider = ({ modalList }) => {
+  const [data, setData] = useState({
+    data: null,
+  });
+  const [name, setName] = useState < string > null;
+  const modalRef = useRef < HTMLDivElement > null;
+
+  useEffect(() => {
+    function handleOpenModal(name, data) {
+      console.log("LOG", name);
+      setName(name);
+      setData(data);
+    }
+
+    function handleClose() {
+      setName(null);
+      setData(null);
+    }
+
+    bottomModal.addEventListener(constants.OPEN, handleOpenModal);
+    bottomModal.addEventListener(constants.CLOSE, handleClose);
+
+    return () => {
+      bottomModal.removeEventListener(constants.OPEN, handleOpenModal);
+      bottomModal.removeEventListener(constants.CLOSE, handleClose);
+    };
+  }, []);
+
+  const handleCloseModal = (e: any) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      bottomModal.close();
+    }
+  };
+
+  const Widget = modalList[name];
+
+  return (
+    <div>
+      {name && Widget && (
+        <div className="fixed z-[1000] left-0 right-0 bottom-0 animate-fromBottom">
+          <Widget {...data.data} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default memo(BottomModalProvider);
 ```
 
 ### index.js
