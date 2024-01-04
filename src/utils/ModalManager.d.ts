@@ -1,10 +1,11 @@
 import Manager from "./Manager";
 declare class ModalManager extends Manager {
     constructor();
-    create(name: string, data: {
-        [key: string]: any;
+    create<T>(name: string, payload: {
+        modalId: number;
+        data?: T;
     }): void;
-    call(name: string, data?: any): void;
+    call<T>(name: string, data?: T): void;
     close<T>(position?: T): void;
 }
 declare const modal: ModalManager;

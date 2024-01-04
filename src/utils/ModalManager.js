@@ -31,13 +31,12 @@ var ModalManager = /** @class */ (function (_super) {
     function ModalManager() {
         return _super.call(this) || this;
     }
-    ModalManager.prototype.create = function (name, data) {
+    ModalManager.prototype.create = function (name, payload) {
         this.name = name;
-        this.data = data;
+        this.data = payload;
         this.emitter.emit(constants.CHANGE, this.name, this.data);
     };
     ModalManager.prototype.call = function (name, data) {
-        if (data === void 0) { data = {}; }
         this.create(name, { modalId: uniqueID(), data: data });
     };
     ModalManager.prototype.close = function (position) {

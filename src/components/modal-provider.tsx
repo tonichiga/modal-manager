@@ -5,7 +5,7 @@ import modal from "../utils/ModalManager";
 export type ModalList = { [key: string]: React.ComponentType };
 
 interface ModalProviderProps {
-  modalList: ModalList;
+  modalList: any;
 }
 
 type TData = { [key: string]: any };

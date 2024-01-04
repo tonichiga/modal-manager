@@ -14,14 +14,14 @@ class ModalManager extends Manager {
     super();
   }
 
-  create(name: string, data: { [key: string]: any }) {
+  create<T>(name: string, payload: { modalId: number; data?: T }) {
     this.name = name;
-    this.data = data;
+    this.data = payload;
     this.emitter.emit(constants.CHANGE, this.name, this.data);
   }
 
-  call(name: string, data: any = {}) {
-    this.create(name, { modalId: uniqueID(), data });
+  call<T>(name: string, data?: T) {
+    this.create<T>(name, { modalId: uniqueID(), data });
   }
 
   close<T>(position?: T) {
