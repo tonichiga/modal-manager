@@ -50,7 +50,7 @@ var react_1 = __importStar(require("react"));
 var ModalManager_1 = __importDefault(require("../utils/ModalManager"));
 var ModalManager_2 = __importDefault(require("../utils/ModalManager"));
 var ModalProvider = function (_a) {
-    var modalList = _a.modalList;
+    var modalList = _a.modalList, isOverflow = _a.isOverflow, className = _a.className;
     var _b = (0, react_1.useState)([]), data = _b[0], setData = _b[1];
     var _c = (0, react_1.useState)([]), names = _c[0], setNames = _c[1];
     var modalRef = (0, react_1.useRef)([]);
@@ -58,6 +58,11 @@ var ModalProvider = function (_a) {
         var handleOpenModal = function (name, data) {
             setData(function (prev) { return __spreadArray(__spreadArray([], prev, true), [data], false); });
             setNames(function (prev) { return __spreadArray(__spreadArray([], prev, true), [name], false); });
+            if (isOverflow) {
+                if (typeof document === "undefined")
+                    return;
+                document.body.style.overflow = "hidden";
+            }
         };
         var handleClose = function (position) {
             if (position === "all") {
@@ -101,7 +106,6 @@ var ModalProvider = function (_a) {
         return Component;
     });
     var handleCloseModal = function (index, e) {
-        console.log(index);
         if (modalRef.current[index] &&
             !modalRef.current[index].contains(e.target)) {
             ModalManager_2.default.close(index);
@@ -116,7 +120,7 @@ var ModalProvider = function (_a) {
             return (react_1.default.createElement("div", { key: item.modalId, onClick: function (e) {
                     handleCloseModal(i, e);
                 } },
-                react_1.default.createElement("div", { className: "backdrop_modal_manager" },
+                react_1.default.createElement("div", { className: "".concat(className, " backdrop_modal_manager") },
                     react_1.default.createElement("div", { ref: function (ref) {
                             refReducer(i, ref);
                         } },

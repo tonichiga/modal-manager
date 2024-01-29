@@ -4,6 +4,8 @@ export type ModalList = {
 };
 interface ModalProviderProps {
     modalList: any;
+    isOverflow?: boolean;
+    className?: string;
 }
-declare const ModalProvider: ({ modalList }: ModalProviderProps) => false | React.JSX.Element[];
+declare const ModalProvider: ({ modalList, isOverflow, className, }: ModalProviderProps) => false | React.JSX.Element[];
 export default ModalProvider;

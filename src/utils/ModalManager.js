@@ -29,7 +29,11 @@ var constants = {
 var ModalManager = /** @class */ (function (_super) {
     __extends(ModalManager, _super);
     function ModalManager() {
-        return _super.call(this) || this;
+        var _this = _super.call(this) || this;
+        _this.create = _this.create.bind(_this);
+        _this.call = _this.call.bind(_this);
+        _this.close = _this.close.bind(_this);
+        return _this;
     }
     ModalManager.prototype.create = function (name, payload) {
         this.name = name;
