@@ -6,11 +6,17 @@ export type ModalList = { [key: string]: React.ComponentType };
 
 interface ModalProviderProps {
   modalList: any;
+  isOverflow?: boolean;
+  className?: string;
 }
 
 type TData = { [key: string]: any };
 
-const ModalProvider = ({ modalList }: ModalProviderProps) => {
+const ModalProvider = ({
+  modalList,
+  isOverflow,
+  className,
+}: ModalProviderProps) => {
   const [data, setData] = useState<TData[]>([]);
   const [names, setNames] = useState<string[]>([]);
   const modalRef = useRef<any[]>([]);
@@ -19,6 +25,11 @@ const ModalProvider = ({ modalList }: ModalProviderProps) => {
     const handleOpenModal = (name: string, data: TData) => {
       setData((prev: TData[]) => [...prev, data]);
       setNames((prev: string[]) => [...prev, name]);
+
+      if (isOverflow) {
+        if (typeof document === "undefined") return;
+        document.body.style.overflow = "hidden";
+      }
     };
 
     const handleClose = (position: number | string) => {
@@ -69,7 +80,6 @@ const ModalProvider = ({ modalList }: ModalProviderProps) => {
   });
 
   const handleCloseModal = (index: number, e: any) => {
-    console.log(index);
     if (
       modalRef.current[index] &&
       !modalRef.current[index].contains(e.target)
@@ -94,7 +104,7 @@ const ModalProvider = ({ modalList }: ModalProviderProps) => {
             handleCloseModal(i, e);
           }}
         >
-          <div className="backdrop_modal_manager">
+          <div className={`${className} backdrop_modal_manager`}>
             <div
               ref={(ref) => {
                 refReducer(i, ref);

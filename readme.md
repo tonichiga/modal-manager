@@ -17,33 +17,32 @@ npm install @4i/modal-manager
 
 #### Instance methods:
 
-##### .call(action, props)
+create table with methods
 
-Call a modal by its action name and pass props to it.
+| Method                               | Description                                           |
+| ------------------------------------ | ----------------------------------------------------- |
+| call(action, props)                  | Call a modal by its action name and pass props to it. |
+|                                      |
+| close('all')                         | Close all modals.                                     |
+|                                      |
+| close(-1)                            | Close last modals.                                    |
+|                                      |
+| close(0)                             | Close first modals.                                   |
+|                                      |
+| close()                              | Close last modals. (default)                          |
+|                                      |
+| addEventListener(event, callback)    | Add an event listener to the modal manager.           |
+|                                      |
+| removeEventListener(event, callback) | Remove an event listener from the modal manager.      |
+|                                      |
 
-##### .close('all')
+#### ModalProvider props
 
-Close all modals.
-
-##### .close(-1)
-
-Close last modals.
-
-##### .close(0)
-
-Close first modals.
-
-##### .close() (default)
-
-Close last modals.
-
-##### .addEventListener(event, callback)
-
-Add an event listener to the modal manager.
-
-##### .removeEventListener(event, callback)
-
-Remove an event listener from the modal manager.
+| Prop       | Type    | Description                                                                |
+| ---------- | ------- | -------------------------------------------------------------------------- |
+| modalList  | Object  | An object containing modal actions as keys and modal components as values. |
+| className  | string  |                                                                            |
+| isOverflow | boolean | Set "overflow: hidden" on body                                             |
 
 #### Define Modal Actions:
 

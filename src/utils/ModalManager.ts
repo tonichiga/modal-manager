@@ -12,6 +12,9 @@ const constants = {
 class ModalManager extends Manager {
   constructor() {
     super();
+    this.create = this.create.bind(this);
+    this.call = this.call.bind(this);
+    this.close = this.close.bind(this);
   }
 
   create<T>(name: string, payload: { modalId: number; data?: T }) {
