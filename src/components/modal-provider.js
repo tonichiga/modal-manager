@@ -65,6 +65,11 @@ var ModalProvider = function (_a) {
             }
         };
         var handleClose = function (position) {
+            if (isOverflow) {
+                if (typeof document !== "undefined") {
+                    document.body.style.overflow = "";
+                }
+            }
             if (position === "all") {
                 setData([]);
                 setNames([]);

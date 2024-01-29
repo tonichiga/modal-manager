@@ -33,6 +33,12 @@ const ModalProvider = ({
     };
 
     const handleClose = (position: number | string) => {
+      if (isOverflow) {
+        if (typeof document !== "undefined") {
+          document.body.style.overflow = "";
+        }
+      }
+
       if (position === "all") {
         setData([]);
         setNames([]);
