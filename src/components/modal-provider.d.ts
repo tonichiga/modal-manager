@@ -6,6 +6,10 @@ interface ModalProviderProps {
     modalList: any;
     isOverflow?: boolean;
     className?: string;
+    onModalStateChange?: (modalState: boolean, data: TData[], names: string[]) => void;
 }
-declare const ModalProvider: ({ modalList, isOverflow, className, }: ModalProviderProps) => false | React.JSX.Element[];
+type TData = {
+    [key: string]: any;
+};
+declare const ModalProvider: ({ modalList, isOverflow, className, onModalStateChange, }: ModalProviderProps) => false | React.JSX.Element[];
 export default ModalProvider;

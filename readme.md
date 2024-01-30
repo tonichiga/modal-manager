@@ -38,11 +38,12 @@ create table with methods
 
 #### ModalProvider props
 
-| Prop       | Type    | Description                                                                |
-| ---------- | ------- | -------------------------------------------------------------------------- |
-| modalList  | Object  | An object containing modal actions as keys and modal components as values. |
-| className  | string  |                                                                            |
-| isOverflow | boolean | Set "overflow: hidden" on body                                             |
+| Prop               | Type     | Description                                                                |
+| ------------------ | -------- | -------------------------------------------------------------------------- |
+| modalList          | Object   | An object containing modal actions as keys and modal components as values. |
+| className          | string   |                                                                            |
+| isOverflow         | boolean  | Set "overflow: hidden" on body                                             |
+| onModalStateChange | function | Callback function that is called when modal state changes.                 |
 
 #### Define Modal Actions:
 

@@ -8,6 +8,11 @@ interface ModalProviderProps {
   modalList: any;
   isOverflow?: boolean;
   className?: string;
+  onModalStateChange?: (
+    modalState: boolean,
+    data: TData[],
+    names: string[]
+  ) => void;
 }
 
 type TData = { [key: string]: any };
@@ -16,10 +21,17 @@ const ModalProvider = ({
   modalList,
   isOverflow,
   className,
+  onModalStateChange,
 }: ModalProviderProps) => {
   const [data, setData] = useState<TData[]>([]);
   const [names, setNames] = useState<string[]>([]);
   const modalRef = useRef<any[]>([]);
+
+  useEffect(() => {
+    if (!onModalStateChange) return;
+    const modalState = data.length !== 0;
+    onModalStateChange(modalState, data, names);
+  }, [data, names]);
 
   useEffect(() => {
     const handleOpenModal = (name: string, data: TData) => {

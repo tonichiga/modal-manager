@@ -50,10 +50,16 @@ var react_1 = __importStar(require("react"));
 var ModalManager_1 = __importDefault(require("../utils/ModalManager"));
 var ModalManager_2 = __importDefault(require("../utils/ModalManager"));
 var ModalProvider = function (_a) {
-    var modalList = _a.modalList, isOverflow = _a.isOverflow, className = _a.className;
+    var modalList = _a.modalList, isOverflow = _a.isOverflow, className = _a.className, onModalStateChange = _a.onModalStateChange;
     var _b = (0, react_1.useState)([]), data = _b[0], setData = _b[1];
     var _c = (0, react_1.useState)([]), names = _c[0], setNames = _c[1];
     var modalRef = (0, react_1.useRef)([]);
+    (0, react_1.useEffect)(function () {
+        if (!onModalStateChange)
+            return;
+        var modalState = data.length !== 0;
+        onModalStateChange(modalState, data, names);
+    }, [data, names]);
     (0, react_1.useEffect)(function () {
         var handleOpenModal = function (name, data) {
             setData(function (prev) { return __spreadArray(__spreadArray([], prev, true), [data], false); });
