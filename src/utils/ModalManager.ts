@@ -11,12 +11,14 @@ const constants = {
 
 class ModalManager extends Manager {
   queue: string[] = [];
+  _openModalStateCallback: null | ((state: boolean) => void);
 
   constructor() {
     super();
     this.create = this.create.bind(this);
     this.call = this.call.bind(this);
     this.close = this.close.bind(this);
+    this._openModalStateCallback = null;
   }
 
   create<T>(name: string, payload: { modalId: number; data?: T }) {
@@ -28,15 +30,23 @@ class ModalManager extends Manager {
   call<T>(name: string, data?: T) {
     this.create<T>(name, { modalId: uniqueID(), data });
     this.queue.push(name);
+    this._openModalStateCallback &&
+      this._openModalStateCallback(this.getQueueState());
   }
 
   close<T>(position?: T) {
     this.emitter.emit(constants.CLOSE, position);
     this.queue.pop();
+    this._openModalStateCallback &&
+      this._openModalStateCallback(this.getQueueState());
+  }
+
+  getQueueState() {
+    return this.queue.length > 0;
   }
 
   onOpenModalState(callback: (state: boolean) => void) {
-    callback(this.queue.length > 0);
+    this._openModalStateCallback = callback;
   }
 }
 

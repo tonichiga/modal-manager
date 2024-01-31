@@ -34,6 +34,7 @@ var ModalManager = /** @class */ (function (_super) {
         _this.create = _this.create.bind(_this);
         _this.call = _this.call.bind(_this);
         _this.close = _this.close.bind(_this);
+        _this._openModalStateCallback = null;
         return _this;
     }
     ModalManager.prototype.create = function (name, payload) {
@@ -44,13 +45,20 @@ var ModalManager = /** @class */ (function (_super) {
     ModalManager.prototype.call = function (name, data) {
         this.create(name, { modalId: uniqueID(), data: data });
         this.queue.push(name);
+        this._openModalStateCallback &&
+            this._openModalStateCallback(this.getQueueState());
     };
     ModalManager.prototype.close = function (position) {
         this.emitter.emit(constants.CLOSE, position);
         this.queue.pop();
+        this._openModalStateCallback &&
+            this._openModalStateCallback(this.getQueueState());
+    };
+    ModalManager.prototype.getQueueState = function () {
+        return this.queue.length > 0;
     };
     ModalManager.prototype.onOpenModalState = function (callback) {
-        callback(this.queue.length > 0);
+        this._openModalStateCallback = callback;
     };
     return ModalManager;
 }(Manager_1.default));
