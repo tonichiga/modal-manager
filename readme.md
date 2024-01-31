@@ -31,6 +31,8 @@ create table with methods
 |                                      |
 | close()                              | Close last modals. (default)                          |
 |                                      |
+| haveOpenModal                        | (getter) Is there at least one window open now        |
+|                                      |
 | addEventListener(event, callback)    | Add an event listener to the modal manager.           |
 |                                      |
 | removeEventListener(event, callback) | Remove an event listener from the modal manager.      |

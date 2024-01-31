@@ -10,6 +10,8 @@ const constants = {
 };
 
 class ModalManager extends Manager {
+  queue: string[] = [];
+
   constructor() {
     super();
     this.create = this.create.bind(this);
@@ -25,10 +27,16 @@ class ModalManager extends Manager {
 
   call<T>(name: string, data?: T) {
     this.create<T>(name, { modalId: uniqueID(), data });
+    this.queue.push(name);
   }
 
   close<T>(position?: T) {
     this.emitter.emit(constants.CLOSE, position);
+    this.queue.pop();
+  }
+
+  get haveOpenModal() {
+    return this.queue.length > 0;
   }
 }
 
