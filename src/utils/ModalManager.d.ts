@@ -8,7 +8,7 @@ declare class ModalManager extends Manager {
     }): void;
     call<T>(name: string, data?: T): void;
     close<T>(position?: T): void;
-    get haveOpenModal(): boolean;
+    onOpenModalState(callback: (state: boolean) => void): void;
 }
 declare const modal: ModalManager;
 export default modal;

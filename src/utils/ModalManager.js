@@ -49,13 +49,9 @@ var ModalManager = /** @class */ (function (_super) {
         this.emitter.emit(constants.CLOSE, position);
         this.queue.pop();
     };
-    Object.defineProperty(ModalManager.prototype, "haveOpenModal", {
-        get: function () {
-            return this.queue.length > 0;
-        },
-        enumerable: false,
-        configurable: true
-    });
+    ModalManager.prototype.onOpenModalState = function (callback) {
+        callback(this.queue.length > 0);
+    };
     return ModalManager;
 }(Manager_1.default));
 var modal = new ModalManager();
