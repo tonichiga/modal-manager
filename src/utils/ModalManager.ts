@@ -35,8 +35,8 @@ class ModalManager extends Manager {
     this.queue.pop();
   }
 
-  get haveOpenModal() {
-    return this.queue.length > 0;
+  onOpenModalState(callback: (state: boolean) => void) {
+    callback(this.queue.length > 0);
   }
 }
 

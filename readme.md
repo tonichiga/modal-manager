@@ -19,6 +19,10 @@ npm install @4i/modal-manager
 
 create table with methods
 
+onOpenModalState(callback: (state: boolean) => void) {
+callback(this.queue.length > 0);
+}
+
 | Method                               | Description                                           |
 | ------------------------------------ | ----------------------------------------------------- |
 | call(action, props)                  | Call a modal by its action name and pass props to it. |
@@ -31,7 +35,7 @@ create table with methods
 |                                      |
 | close()                              | Close last modals. (default)                          |
 |                                      |
-| haveOpenModal                        | (getter) Is there at least one window open now        |
+| onOpenModalState(callback)           | Is there at least one window open now                 |
 |                                      |
 | addEventListener(event, callback)    | Add an event listener to the modal manager.           |
 |                                      |
