@@ -21,12 +21,6 @@ npm install @4i/modal-manager
 
 #### Instance methods:
 
-create table with methods
-
-onOpenModalState(callback: (state: boolean) => void) {
-callback(this.queue.length > 0);
-}
-
 | Method                               | Description                                           |
 | ------------------------------------ | ----------------------------------------------------- |
 | call(action, props)                  | Call a modal by its action name and pass props to it. |
