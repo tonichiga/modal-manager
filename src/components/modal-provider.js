@@ -128,7 +128,7 @@ var ModalProvider = function (_a) {
     return (data.length !== 0 &&
         data.map(function (item, i) {
             var Modal = activeModals[i] || (function () { return react_1.default.createElement(react_1.default.Fragment, null); });
-            return (react_1.default.createElement("div", { key: item.modalId, onClick: function (e) {
+            return (react_1.default.createElement("div", { key: item.modalId, onMouseUp: function (e) {
                     handleCloseModal(i, e);
                 } },
                 react_1.default.createElement("div", { className: "".concat(className, " backdrop_modal_manager") },

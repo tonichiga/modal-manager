@@ -118,7 +118,7 @@ const ModalProvider = ({
       return (
         <div
           key={item.modalId}
-          onClick={(e) => {
+          onMouseUp={(e) => {
             handleCloseModal(i, e);
           }}
         >
