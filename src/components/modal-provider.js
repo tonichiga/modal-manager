@@ -50,9 +50,9 @@ var react_1 = __importStar(require("react"));
 var ModalManager_1 = __importDefault(require("../utils/ModalManager"));
 var ModalManager_2 = __importDefault(require("../utils/ModalManager"));
 var ModalProvider = function (_a) {
-    var modalList = _a.modalList, isOverflow = _a.isOverflow, className = _a.className, onModalStateChange = _a.onModalStateChange;
-    var _b = (0, react_1.useState)([]), data = _b[0], setData = _b[1];
-    var _c = (0, react_1.useState)([]), names = _c[0], setNames = _c[1];
+    var modalList = _a.modalList, isOverflow = _a.isOverflow, className = _a.className, onModalStateChange = _a.onModalStateChange, onModalClose = _a.onModalClose, onModalOpen = _a.onModalOpen, _b = _a.isHaveBackdrop, isHaveBackdrop = _b === void 0 ? true : _b, _c = _a.isCloseOnBackdropClick, isCloseOnBackdropClick = _c === void 0 ? true : _c;
+    var _d = (0, react_1.useState)([]), data = _d[0], setData = _d[1];
+    var _e = (0, react_1.useState)([]), names = _e[0], setNames = _e[1];
     var modalRef = (0, react_1.useRef)([]);
     (0, react_1.useEffect)(function () {
         if (!onModalStateChange)
@@ -64,6 +64,9 @@ var ModalProvider = function (_a) {
         var handleOpenModal = function (name, data) {
             setData(function (prev) { return __spreadArray(__spreadArray([], prev, true), [data], false); });
             setNames(function (prev) { return __spreadArray(__spreadArray([], prev, true), [name], false); });
+            if (onModalOpen) {
+                onModalOpen(name);
+            }
             if (isOverflow) {
                 if (typeof document === "undefined")
                     return;
@@ -77,12 +80,18 @@ var ModalProvider = function (_a) {
                 }
             }
             if (position === "all") {
+                if (onModalClose) {
+                    onModalClose("all");
+                }
                 setData([]);
                 setNames([]);
                 return;
             }
             if (position === -1) {
                 // remove last
+                if (onModalClose) {
+                    onModalClose(names[names.length - 1]);
+                }
                 setData(function (prev) {
                     return prev.filter(function (_, index) { return index !== prev.length - 1; });
                 });
@@ -93,6 +102,9 @@ var ModalProvider = function (_a) {
             }
             if (position === 0) {
                 // remove first
+                if (onModalClose) {
+                    onModalClose(names[0]);
+                }
                 setData(function (prev) { return prev.filter(function (_, index) { return index !== 0; }); });
                 setNames(function (prev) { return prev.filter(function (_, index) { return index !== 0; }); });
                 return;
@@ -117,6 +129,8 @@ var ModalProvider = function (_a) {
         return Component;
     });
     var handleCloseModal = function (index, e) {
+        if (!isCloseOnBackdropClick)
+            return;
         if (modalRef.current[index] &&
             !modalRef.current[index].contains(e.target)) {
             ModalManager_2.default.close(index);
@@ -128,10 +142,10 @@ var ModalProvider = function (_a) {
     return (data.length !== 0 &&
         data.map(function (item, i) {
             var Modal = activeModals[i] || (function () { return react_1.default.createElement(react_1.default.Fragment, null); });
-            return (react_1.default.createElement("div", { key: item.modalId, onMouseUp: function (e) {
-                    handleCloseModal(i, e);
+            return (react_1.default.createElement("div", { key: item.modalId, onMouseDown: function (e) {
+                    isCloseOnBackdropClick && handleCloseModal(i, e);
                 } },
-                react_1.default.createElement("div", { className: "".concat(className, " backdrop_modal_manager") },
+                react_1.default.createElement("div", { className: "".concat(className, " backdrop_modal_manager ").concat(isHaveBackdrop && isCloseOnBackdropClick && "backdrop") },
                     react_1.default.createElement("div", { ref: function (ref) {
                             refReducer(i, ref);
                         } },

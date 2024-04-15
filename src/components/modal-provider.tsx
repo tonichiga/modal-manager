@@ -8,6 +8,10 @@ interface ModalProviderProps {
   modalList: any;
   isOverflow?: boolean;
   className?: string;
+  isHaveBackdrop?: boolean;
+  isCloseOnBackdropClick?: boolean;
+  onModalClose?: (modalName: string | string[]) => void;
+  onModalOpen?: (modalName: string) => void;
   onModalStateChange?: (
     modalState: boolean,
     data: TData[],
@@ -22,6 +26,10 @@ const ModalProvider = ({
   isOverflow,
   className,
   onModalStateChange,
+  onModalClose,
+  onModalOpen,
+  isHaveBackdrop = true,
+  isCloseOnBackdropClick = true,
 }: ModalProviderProps) => {
   const [data, setData] = useState<TData[]>([]);
   const [names, setNames] = useState<string[]>([]);
@@ -37,6 +45,9 @@ const ModalProvider = ({
     const handleOpenModal = (name: string, data: TData) => {
       setData((prev: TData[]) => [...prev, data]);
       setNames((prev: string[]) => [...prev, name]);
+      if (onModalOpen) {
+        onModalOpen(name);
+      }
 
       if (isOverflow) {
         if (typeof document === "undefined") return;
@@ -52,6 +63,9 @@ const ModalProvider = ({
       }
 
       if (position === "all") {
+        if (onModalClose) {
+          onModalClose("all");
+        }
         setData([]);
         setNames([]);
         return;
@@ -59,6 +73,9 @@ const ModalProvider = ({
 
       if (position === -1) {
         // remove last
+        if (onModalClose) {
+          onModalClose(names[names.length - 1]);
+        }
         setData((prev: TData[]) =>
           prev.filter((_, index) => index !== prev.length - 1)
         );
@@ -70,6 +87,9 @@ const ModalProvider = ({
 
       if (position === 0) {
         // remove first
+        if (onModalClose) {
+          onModalClose(names[0]);
+        }
         setData((prev: TData[]) => prev.filter((_, index) => index !== 0));
         setNames((prev: string[]) => prev.filter((_, index) => index !== 0));
         return;
@@ -98,6 +118,7 @@ const ModalProvider = ({
   });
 
   const handleCloseModal = (index: number, e: any) => {
+    if (!isCloseOnBackdropClick) return;
     if (
       modalRef.current[index] &&
       !modalRef.current[index].contains(e.target)
@@ -119,10 +140,14 @@ const ModalProvider = ({
         <div
           key={item.modalId}
           onMouseDown={(e) => {
-            handleCloseModal(i, e);
+            isCloseOnBackdropClick && handleCloseModal(i, e);
           }}
         >
-          <div className={`${className} backdrop_modal_manager`}>
+          <div
+            className={`${className} backdrop_modal_manager ${
+              isHaveBackdrop && isCloseOnBackdropClick && "backdrop"
+            }`}
+          >
             <div
               ref={(ref) => {
                 refReducer(i, ref);

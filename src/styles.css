@@ -27,11 +27,14 @@
   bottom: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
   z-index: 1000;
-  opacity: 0;
   animation: bg_opacity 150ms ease-in-out forwards;
+}
+
+.backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
 }
 
 .backdrop_modal_manager > div {
