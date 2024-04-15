@@ -18,6 +18,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ModalManager = void 0;
 var Manager_1 = __importDefault(require("./Manager"));
 function uniqueID() {
     return Math.floor(Math.random() * Date.now());
@@ -62,5 +63,6 @@ var ModalManager = /** @class */ (function (_super) {
     };
     return ModalManager;
 }(Manager_1.default));
+exports.ModalManager = ModalManager;
 var modal = new ModalManager();
 exports.default = modal;

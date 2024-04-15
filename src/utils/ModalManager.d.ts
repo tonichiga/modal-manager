@@ -1,5 +1,5 @@
 import Manager from "./Manager";
-declare class ModalManager extends Manager {
+export declare class ModalManager extends Manager {
     queue: string[];
     _openModalStateCallback: null | ((state: boolean) => void);
     constructor();

@@ -9,7 +9,7 @@ const constants = {
   CLOSE: "close",
 };
 
-class ModalManager extends Manager {
+export class ModalManager extends Manager {
   queue: string[] = [];
   _openModalStateCallback: null | ((state: boolean) => void);
 
