@@ -8,6 +8,7 @@ interface ModalProviderProps {
     className?: string;
     isHaveBackdrop?: boolean;
     isCloseOnBackdropClick?: boolean;
+    zIndex?: number;
     onModalClose?: (modalName: string | string[]) => void;
     onModalOpen?: (modalName: string) => void;
     onModalStateChange?: (modalState: boolean, data: TData[], names: string[]) => void;
@@ -15,5 +16,5 @@ interface ModalProviderProps {
 type TData = {
     [key: string]: any;
 };
-declare const ModalProvider: ({ modalList, isOverflow, className, onModalStateChange, onModalClose, onModalOpen, isHaveBackdrop, isCloseOnBackdropClick, }: ModalProviderProps) => false | React.JSX.Element[];
+declare const ModalProvider: ({ modalList, isOverflow, className, onModalStateChange, onModalClose, onModalOpen, isHaveBackdrop, isCloseOnBackdropClick, zIndex, }: ModalProviderProps) => false | React.JSX.Element[];
 export default ModalProvider;

@@ -50,7 +50,7 @@ var react_1 = __importStar(require("react"));
 var ModalManager_1 = __importDefault(require("../utils/ModalManager"));
 var ModalManager_2 = __importDefault(require("../utils/ModalManager"));
 var ModalProvider = function (_a) {
-    var modalList = _a.modalList, isOverflow = _a.isOverflow, className = _a.className, onModalStateChange = _a.onModalStateChange, onModalClose = _a.onModalClose, onModalOpen = _a.onModalOpen, _b = _a.isHaveBackdrop, isHaveBackdrop = _b === void 0 ? true : _b, _c = _a.isCloseOnBackdropClick, isCloseOnBackdropClick = _c === void 0 ? true : _c;
+    var modalList = _a.modalList, isOverflow = _a.isOverflow, className = _a.className, onModalStateChange = _a.onModalStateChange, onModalClose = _a.onModalClose, onModalOpen = _a.onModalOpen, _b = _a.isHaveBackdrop, isHaveBackdrop = _b === void 0 ? true : _b, _c = _a.isCloseOnBackdropClick, isCloseOnBackdropClick = _c === void 0 ? true : _c, zIndex = _a.zIndex;
     var _d = (0, react_1.useState)([]), data = _d[0], setData = _d[1];
     var _e = (0, react_1.useState)([]), names = _e[0], setNames = _e[1];
     var modalRef = (0, react_1.useRef)([]);
@@ -142,7 +142,7 @@ var ModalProvider = function (_a) {
     return (data.length !== 0 &&
         data.map(function (item, i) {
             var Modal = activeModals[i] || (function () { return react_1.default.createElement(react_1.default.Fragment, null); });
-            return (react_1.default.createElement("div", { key: item.modalId, onMouseDown: function (e) {
+            return (react_1.default.createElement("div", { style: { zIndex: zIndex || 1000 + i }, key: item.modalId, onMouseDown: function (e) {
                     isCloseOnBackdropClick && handleCloseModal(i, e);
                 } },
                 react_1.default.createElement("div", { className: "".concat(className, " backdrop_modal_manager ").concat(isHaveBackdrop && isCloseOnBackdropClick && "backdrop") },

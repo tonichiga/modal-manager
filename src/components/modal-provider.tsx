@@ -10,6 +10,7 @@ interface ModalProviderProps {
   className?: string;
   isHaveBackdrop?: boolean;
   isCloseOnBackdropClick?: boolean;
+  zIndex?: number;
   onModalClose?: (modalName: string | string[]) => void;
   onModalOpen?: (modalName: string) => void;
   onModalStateChange?: (
@@ -30,6 +31,7 @@ const ModalProvider = ({
   onModalOpen,
   isHaveBackdrop = true,
   isCloseOnBackdropClick = true,
+  zIndex,
 }: ModalProviderProps) => {
   const [data, setData] = useState<TData[]>([]);
   const [names, setNames] = useState<string[]>([]);
@@ -138,6 +140,7 @@ const ModalProvider = ({
 
       return (
         <div
+          style={{ zIndex: zIndex || 1000 + i }}
           key={item.modalId}
           onMouseDown={(e) => {
             isCloseOnBackdropClick && handleCloseModal(i, e);
