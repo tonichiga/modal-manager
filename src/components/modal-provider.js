@@ -142,7 +142,7 @@ var ModalProvider = function (_a) {
     return (data.length !== 0 &&
         data.map(function (item, i) {
             var Modal = activeModals[i] || (function () { return react_1.default.createElement(react_1.default.Fragment, null); });
-            return (react_1.default.createElement("div", { style: { zIndex: zIndex || 1000 + i }, key: item.modalId, onMouseDown: function (e) {
+            return (react_1.default.createElement("div", { style: { zIndex: zIndex || 1000 + i, position: "relative" }, key: item.modalId, onMouseDown: function (e) {
                     isCloseOnBackdropClick && handleCloseModal(i, e);
                 } },
                 react_1.default.createElement("div", { className: "".concat(className, " backdrop_modal_manager ").concat(isHaveBackdrop && isCloseOnBackdropClick && "backdrop") },

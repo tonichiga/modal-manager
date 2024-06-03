@@ -140,7 +140,7 @@ const ModalProvider = ({
 
       return (
         <div
-          style={{ zIndex: zIndex || 1000 + i }}
+          style={{ zIndex: zIndex || 1000 + i, position: "relative" }}
           key={item.modalId}
           onMouseDown={(e) => {
             isCloseOnBackdropClick && handleCloseModal(i, e);
