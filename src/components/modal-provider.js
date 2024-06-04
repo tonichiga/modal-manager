@@ -50,7 +50,7 @@ var react_1 = __importStar(require("react"));
 var ModalManager_1 = __importDefault(require("../utils/ModalManager"));
 var ModalManager_2 = __importDefault(require("../utils/ModalManager"));
 var ModalProvider = function (_a) {
-    var modalList = _a.modalList, isOverflow = _a.isOverflow, className = _a.className, onModalStateChange = _a.onModalStateChange, onModalClose = _a.onModalClose, onModalOpen = _a.onModalOpen, _b = _a.isHaveBackdrop, isHaveBackdrop = _b === void 0 ? true : _b, _c = _a.isCloseOnBackdropClick, isCloseOnBackdropClick = _c === void 0 ? true : _c, zIndex = _a.zIndex;
+    var modalList = _a.modalList, isOverflow = _a.isOverflow, className = _a.className, onModalStateChange = _a.onModalStateChange, onModalClose = _a.onModalClose, onModalOpen = _a.onModalOpen, _b = _a.isHaveBackdrop, isHaveBackdrop = _b === void 0 ? true : _b, _c = _a.isCloseOnBackdropClick, isCloseOnBackdropClick = _c === void 0 ? true : _c, zIndex = _a.zIndex, ignoreClickClassName = _a.ignoreClickClassName, ignoreClickAttribute = _a.ignoreClickAttribute;
     var _d = (0, react_1.useState)([]), data = _d[0], setData = _d[1];
     var _e = (0, react_1.useState)([]), names = _e[0], setNames = _e[1];
     var modalRef = (0, react_1.useRef)([]);
@@ -130,6 +130,11 @@ var ModalProvider = function (_a) {
     });
     var handleCloseModal = function (index, e) {
         if (!isCloseOnBackdropClick)
+            return;
+        if (ignoreClickClassName &&
+            e.target.className.includes(ignoreClickClassName))
+            return;
+        if (ignoreClickAttribute && e.target.getAttribute(ignoreClickAttribute))
             return;
         if (modalRef.current[index] &&
             !modalRef.current[index].contains(e.target)) {
