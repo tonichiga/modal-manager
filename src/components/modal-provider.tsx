@@ -18,6 +18,7 @@ interface ModalProviderProps {
     data: TData[],
     names: string[]
   ) => void;
+  ignoreClickElement?: Element;
 }
 
 type TData = { [key: string]: any };
@@ -32,6 +33,7 @@ const ModalProvider = ({
   isHaveBackdrop = true,
   isCloseOnBackdropClick = true,
   zIndex,
+  ignoreClickElement,
 }: ModalProviderProps) => {
   const [data, setData] = useState<TData[]>([]);
   const [names, setNames] = useState<string[]>([]);
@@ -121,6 +123,7 @@ const ModalProvider = ({
 
   const handleCloseModal = (index: number, e: any) => {
     if (!isCloseOnBackdropClick) return;
+    if (ignoreClickElement && ignoreClickElement.contains(e.target)) return;
     if (
       modalRef.current[index] &&
       !modalRef.current[index].contains(e.target)
