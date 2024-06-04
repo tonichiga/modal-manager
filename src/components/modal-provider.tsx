@@ -19,7 +19,6 @@ interface ModalProviderProps {
     names: string[]
   ) => void;
   ignoreClickClassName?: string;
-  ignoreClickAttribute?: string;
 }
 
 type TData = { [key: string]: any };
@@ -35,7 +34,6 @@ const ModalProvider = ({
   isCloseOnBackdropClick = true,
   zIndex,
   ignoreClickClassName,
-  ignoreClickAttribute,
 }: ModalProviderProps) => {
   const [data, setData] = useState<TData[]>([]);
   const [names, setNames] = useState<string[]>([]);
@@ -124,14 +122,12 @@ const ModalProvider = ({
   });
 
   const handleCloseModal = (index: number, e: any) => {
+    e.stopPropagation();
     if (!isCloseOnBackdropClick) return;
-    if (
-      ignoreClickClassName &&
-      e.target.className.includes(ignoreClickClassName)
-    )
-      return;
-    if (ignoreClickAttribute && e.target.getAttribute(ignoreClickAttribute))
-      return;
+
+    const element = document.querySelector(`.${ignoreClickClassName}`);
+    if (element && element.contains(e.target)) return;
+
     if (
       modalRef.current[index] &&
       !modalRef.current[index].contains(e.target)
