@@ -44,19 +44,33 @@ var ModalManager = /** @class */ (function (_super) {
         this.emitter.emit(constants.CHANGE, this.name, this.data);
     };
     ModalManager.prototype.call = function (name, data) {
+        var _a;
         this.create(name, { modalId: uniqueID(), data: data });
+        var lastOpenedModal = name;
         this.queue.push(name);
-        this._openModalStateCallback &&
-            this._openModalStateCallback(this.getQueueState());
+        (_a = this._openModalStateCallback) === null || _a === void 0 ? void 0 : _a.call(this, this.getQueueState({
+            queue: this.queue,
+            lastOpenedModal: lastOpenedModal,
+        }));
     };
     ModalManager.prototype.close = function (position) {
+        var _a;
         this.emitter.emit(constants.CLOSE, position);
+        var closedModalName = this.queue[this.queue.length - 1];
         this.queue.pop();
-        this._openModalStateCallback &&
-            this._openModalStateCallback(this.getQueueState());
+        (_a = this._openModalStateCallback) === null || _a === void 0 ? void 0 : _a.call(this, this.getQueueState({
+            queue: this.queue,
+            closedModalName: closedModalName,
+        }));
     };
-    ModalManager.prototype.getQueueState = function () {
-        return this.queue.length > 0;
+    ModalManager.prototype.getQueueState = function (_a) {
+        var queue = _a.queue, closedModalName = _a.closedModalName, lastOpenedModal = _a.lastOpenedModal;
+        return {
+            isHaveOpenModals: queue.length > 0,
+            queue: queue,
+            lastOpenedModal: lastOpenedModal,
+            closedModalName: closedModalName,
+        };
     };
     ModalManager.prototype.onOpenModalState = function (callback) {
         this._openModalStateCallback = callback;
