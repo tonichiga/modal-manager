@@ -14,6 +14,11 @@ interface ModalState {
     closedModalName?: string | undefined;
     lastOpenedModal?: string | undefined;
 }
+interface Options {
+    showBackdrop?: boolean;
+    extraClass?: string;
+    openMinimized?: boolean;
+}
 export declare class ModalManager extends Manager {
     queue: string[];
     _openModalStateCallback: null | ((props: ModalState) => void);
@@ -21,8 +26,8 @@ export declare class ModalManager extends Manager {
     create<T>(name: string, payload: {
         modalId: number;
         data?: T;
-    }): void;
-    call<T>(name: string, data?: T): void;
+    }, options?: Options): void;
+    call<T>(name: string, data?: T, options?: Options): void;
     close<T>(position?: T): void;
     getQueueState({ queue, closedModalName, lastOpenedModal }: QueueState): {
         isHaveOpenModals: boolean;

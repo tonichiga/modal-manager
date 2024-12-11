@@ -38,14 +38,14 @@ var ModalManager = /** @class */ (function (_super) {
         _this._openModalStateCallback = null;
         return _this;
     }
-    ModalManager.prototype.create = function (name, payload) {
+    ModalManager.prototype.create = function (name, payload, options) {
         this.name = name;
         this.data = payload;
-        this.emitter.emit(exports.constants.CHANGE, this.name, this.data);
+        this.emitter.emit(exports.constants.CHANGE, this.name, this.data, options);
     };
-    ModalManager.prototype.call = function (name, data) {
+    ModalManager.prototype.call = function (name, data, options) {
         var _a;
-        this.create(name, { modalId: uniqueID(), data: data });
+        this.create(name, { modalId: uniqueID(), data: data }, options);
         var lastOpenedModal = name;
         this.queue.push(name);
         (_a = this._openModalStateCallback) === null || _a === void 0 ? void 0 : _a.call(this, this.getQueueState({
