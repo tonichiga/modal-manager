@@ -22,8 +22,8 @@ interface ModalState {
   lastOpenedModal?: string | undefined;
 }
 
-interface Options {
-  showBackdrop?: boolean;
+export interface Options {
+  hideBackdrop?: boolean;
   extraClass?: string;
   openToHeight?: string;
 }
