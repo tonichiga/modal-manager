@@ -18,12 +18,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ModalManager = void 0;
+exports.ModalManager = exports.constants = void 0;
 var Manager_1 = __importDefault(require("./Manager"));
 function uniqueID() {
     return Math.floor(Math.random() * Date.now());
 }
-var constants = {
+exports.constants = {
     CHANGE: "change",
     CLOSE: "close",
 };
@@ -41,7 +41,7 @@ var ModalManager = /** @class */ (function (_super) {
     ModalManager.prototype.create = function (name, payload) {
         this.name = name;
         this.data = payload;
-        this.emitter.emit(constants.CHANGE, this.name, this.data);
+        this.emitter.emit(exports.constants.CHANGE, this.name, this.data);
     };
     ModalManager.prototype.call = function (name, data) {
         var _a;
@@ -55,7 +55,7 @@ var ModalManager = /** @class */ (function (_super) {
     };
     ModalManager.prototype.close = function (position) {
         var _a;
-        this.emitter.emit(constants.CLOSE, position);
+        this.emitter.emit(exports.constants.CLOSE, position);
         var closedModalName = this.queue[this.queue.length - 1];
         this.queue.pop();
         (_a = this._openModalStateCallback) === null || _a === void 0 ? void 0 : _a.call(this, this.getQueueState({

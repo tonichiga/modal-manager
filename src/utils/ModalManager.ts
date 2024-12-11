@@ -4,7 +4,7 @@ function uniqueID() {
   return Math.floor(Math.random() * Date.now());
 }
 
-const constants = {
+export const constants = {
   CHANGE: "change",
   CLOSE: "close",
 };

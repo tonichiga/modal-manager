@@ -1,4 +1,8 @@
 import Manager from "./Manager";
+export declare const constants: {
+    CHANGE: string;
+    CLOSE: string;
+};
 interface QueueState {
     queue: string[];
     closedModalName?: string | undefined;

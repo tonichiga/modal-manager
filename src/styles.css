@@ -16,8 +16,7 @@
   }
 }
 
-.backdrop_modal_manager {
-  position: absolute;
+.modal-manager.backdrop_modal_manager {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,19 +28,21 @@
   height: 100%;
   position: fixed;
   z-index: 1000;
+}
+
+.modal-manager .backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   animation: bg_opacity 150ms ease-in-out forwards;
 }
 
-.backdrop {
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-}
-
-.backdrop_modal_manager > div {
+.modal-manager .modal_paper {
+  position: relative;
+  z-index: 1001;
   animation: bg_opacity_scale 150ms ease-in-out forwards;
-}
-
-.main_container_modal_manager {
-  opacity: 0;
-  animation: bg_opacity 250ms forwards;
 }

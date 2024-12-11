@@ -1,4 +1,5 @@
 "use strict";
+"use client";
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -42,31 +43,26 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importStar(require("react"));
-var ModalManager_1 = __importDefault(require("../utils/ModalManager"));
-var ModalManager_2 = __importDefault(require("../utils/ModalManager"));
+var ModalManager_1 = __importStar(require("../utils/ModalManager"));
 var ModalProvider = function (_a) {
-    var modalList = _a.modalList, isOverflow = _a.isOverflow, className = _a.className, onModalStateChange = _a.onModalStateChange, onModalClose = _a.onModalClose, onModalOpen = _a.onModalOpen, _b = _a.isHaveBackdrop, isHaveBackdrop = _b === void 0 ? true : _b, _c = _a.isCloseOnBackdropClick, isCloseOnBackdropClick = _c === void 0 ? true : _c, zIndex = _a.zIndex, ignoreClickClassName = _a.ignoreClickClassName;
-    var _d = (0, react_1.useState)([]), data = _d[0], setData = _d[1];
-    var _e = (0, react_1.useState)([]), names = _e[0], setNames = _e[1];
+    var modalList = _a.modalList, isOverflow = _a.isOverflow, className = _a.className, backdropClassName = _a.backdropClassName, modalManager = _a.modalManager, onModalStateChange = _a.onModalStateChange;
+    var _b = (0, react_1.useState)([]), data = _b[0], setData = _b[1];
+    var _c = (0, react_1.useState)([]), names = _c[0], setNames = _c[1];
     var modalRef = (0, react_1.useRef)([]);
+    var m = modalManager !== null && modalManager !== void 0 ? modalManager : ModalManager_1.default;
     (0, react_1.useEffect)(function () {
         if (!onModalStateChange)
             return;
         var modalState = data.length !== 0;
         onModalStateChange(modalState, data, names);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, names]);
     (0, react_1.useEffect)(function () {
         var handleOpenModal = function (name, data) {
             setData(function (prev) { return __spreadArray(__spreadArray([], prev, true), [data], false); });
             setNames(function (prev) { return __spreadArray(__spreadArray([], prev, true), [name], false); });
-            if (onModalOpen) {
-                onModalOpen(name);
-            }
             if (isOverflow) {
                 if (typeof document === "undefined")
                     return;
@@ -80,18 +76,12 @@ var ModalProvider = function (_a) {
                 }
             }
             if (position === "all") {
-                if (onModalClose) {
-                    onModalClose("all");
-                }
                 setData([]);
                 setNames([]);
                 return;
             }
             if (position === -1) {
                 // remove last
-                if (onModalClose) {
-                    onModalClose(names[names.length - 1]);
-                }
                 setData(function (prev) {
                     return prev.filter(function (_, index) { return index !== prev.length - 1; });
                 });
@@ -102,9 +92,6 @@ var ModalProvider = function (_a) {
             }
             if (position === 0) {
                 // remove first
-                if (onModalClose) {
-                    onModalClose(names[0]);
-                }
                 setData(function (prev) { return prev.filter(function (_, index) { return index !== 0; }); });
                 setNames(function (prev) { return prev.filter(function (_, index) { return index !== 0; }); });
                 return;
@@ -117,43 +104,37 @@ var ModalProvider = function (_a) {
                 return prev.filter(function (_, index) { return index !== prev.length - 1; });
             });
         };
-        ModalManager_1.default.addEventListener("change", handleOpenModal);
-        ModalManager_1.default.addEventListener("close", handleClose);
+        m.addEventListener(ModalManager_1.constants.CHANGE, handleOpenModal);
+        m.addEventListener(ModalManager_1.constants.CLOSE, handleClose);
         return function () {
-            ModalManager_1.default.removeEventListener("change", handleOpenModal);
-            ModalManager_1.default.removeEventListener("close", handleClose);
+            m.removeEventListener(ModalManager_1.constants.CHANGE, handleOpenModal);
+            m.removeEventListener(ModalManager_1.constants.CLOSE, handleClose);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     var activeModals = names.map(function (name) {
         var Component = modalList[name] || (function () { return react_1.default.createElement(react_1.default.Fragment, null); });
         return Component;
     });
-    var handleCloseModal = function (index, e) {
-        e.stopPropagation();
-        if (!isCloseOnBackdropClick)
-            return;
-        var element = document.querySelector(".".concat(ignoreClickClassName));
-        if (element && element.contains(e.target))
-            return;
-        if (modalRef.current[index] &&
-            !modalRef.current[index].contains(e.target)) {
-            ModalManager_2.default.close(index);
-        }
+    var handleCloseModal = function (index) {
+        m.close(index);
     };
     var refReducer = function (index, value) {
         modalRef.current[index] = value;
     };
-    return (data.length !== 0 &&
+    return (react_1.default.createElement(react_1.default.Fragment, null, data.length !== 0 &&
         data.map(function (item, i) {
             var Modal = activeModals[i] || (function () { return react_1.default.createElement(react_1.default.Fragment, null); });
-            return (react_1.default.createElement("div", { style: { zIndex: zIndex || 1000 + i, position: "relative" }, key: item.modalId, onMouseDown: function (e) {
-                    isCloseOnBackdropClick && handleCloseModal(i, e);
-                } },
-                react_1.default.createElement("div", { className: "".concat(className, " backdrop_modal_manager ").concat(isHaveBackdrop && isCloseOnBackdropClick && "backdrop") },
+            return (react_1.default.createElement("div", { key: item.modalId, className: "modal-manager backdrop_modal_manager ".concat(backdropClassName) },
+                react_1.default.createElement("div", { onClick: function (e) {
+                        e.stopPropagation();
+                        handleCloseModal(i);
+                    }, className: "backdrop" }),
+                react_1.default.createElement("div", { className: "".concat(className, " modal_paper") },
                     react_1.default.createElement("div", { ref: function (ref) {
                             refReducer(i, ref);
                         } },
                         react_1.default.createElement(Modal, __assign({}, item.data))))));
-        }));
+        })));
 };
 exports.default = ModalProvider;

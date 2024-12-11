@@ -1,6 +1,7 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from "react";
-import manager from "../utils/ModalManager";
-import modal from "../utils/ModalManager";
+import modal, { constants, ModalManager } from "../utils/ModalManager";
 
 export type ModalList = { [key: string]: React.ComponentType };
 
@@ -8,17 +9,13 @@ interface ModalProviderProps {
   modalList: any;
   isOverflow?: boolean;
   className?: string;
-  isHaveBackdrop?: boolean;
-  isCloseOnBackdropClick?: boolean;
-  zIndex?: number;
-  onModalClose?: (modalName: string | string[]) => void;
-  onModalOpen?: (modalName: string) => void;
+  backdropClassName?: string;
+  modalManager?: ModalManager;
   onModalStateChange?: (
     modalState: boolean,
     data: TData[],
     names: string[]
   ) => void;
-  ignoreClickClassName?: string;
 }
 
 type TData = { [key: string]: any };
@@ -27,31 +24,26 @@ const ModalProvider = ({
   modalList,
   isOverflow,
   className,
+  backdropClassName,
+  modalManager,
   onModalStateChange,
-  onModalClose,
-  onModalOpen,
-  isHaveBackdrop = true,
-  isCloseOnBackdropClick = true,
-  zIndex,
-  ignoreClickClassName,
 }: ModalProviderProps) => {
   const [data, setData] = useState<TData[]>([]);
   const [names, setNames] = useState<string[]>([]);
   const modalRef = useRef<any[]>([]);
+  const m = modalManager ?? modal;
 
   useEffect(() => {
     if (!onModalStateChange) return;
     const modalState = data.length !== 0;
     onModalStateChange(modalState, data, names);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, names]);
 
   useEffect(() => {
     const handleOpenModal = (name: string, data: TData) => {
       setData((prev: TData[]) => [...prev, data]);
       setNames((prev: string[]) => [...prev, name]);
-      if (onModalOpen) {
-        onModalOpen(name);
-      }
 
       if (isOverflow) {
         if (typeof document === "undefined") return;
@@ -67,9 +59,6 @@ const ModalProvider = ({
       }
 
       if (position === "all") {
-        if (onModalClose) {
-          onModalClose("all");
-        }
         setData([]);
         setNames([]);
         return;
@@ -77,9 +66,6 @@ const ModalProvider = ({
 
       if (position === -1) {
         // remove last
-        if (onModalClose) {
-          onModalClose(names[names.length - 1]);
-        }
         setData((prev: TData[]) =>
           prev.filter((_, index) => index !== prev.length - 1)
         );
@@ -91,9 +77,6 @@ const ModalProvider = ({
 
       if (position === 0) {
         // remove first
-        if (onModalClose) {
-          onModalClose(names[0]);
-        }
         setData((prev: TData[]) => prev.filter((_, index) => index !== 0));
         setNames((prev: string[]) => prev.filter((_, index) => index !== 0));
         return;
@@ -108,12 +91,13 @@ const ModalProvider = ({
       );
     };
 
-    manager.addEventListener("change", handleOpenModal);
-    manager.addEventListener("close", handleClose);
+    m.addEventListener(constants.CHANGE, handleOpenModal);
+    m.addEventListener(constants.CLOSE, handleClose);
     return () => {
-      manager.removeEventListener("change", handleOpenModal);
-      manager.removeEventListener("close", handleClose);
+      m.removeEventListener(constants.CHANGE, handleOpenModal);
+      m.removeEventListener(constants.CLOSE, handleClose);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const activeModals = names.map((name: string) => {
@@ -121,19 +105,8 @@ const ModalProvider = ({
     return Component;
   });
 
-  const handleCloseModal = (index: number, e: any) => {
-    e.stopPropagation();
-    if (!isCloseOnBackdropClick) return;
-
-    const element = document.querySelector(`.${ignoreClickClassName}`);
-    if (element && element.contains(e.target)) return;
-
-    if (
-      modalRef.current[index] &&
-      !modalRef.current[index].contains(e.target)
-    ) {
-      modal.close(index);
-    }
+  const handleCloseModal = (index: number) => {
+    m.close(index);
   };
 
   const refReducer = (index: number, value: any) => {
@@ -141,34 +114,37 @@ const ModalProvider = ({
   };
 
   return (
-    data.length !== 0 &&
-    data.map((item, i) => {
-      const Modal = activeModals[i] || (() => <></>);
+    <>
+      {data.length !== 0 &&
+        data.map((item, i) => {
+          const Modal = activeModals[i] || (() => <></>);
 
-      return (
-        <div
-          style={{ zIndex: zIndex || 1000 + i, position: "relative" }}
-          key={item.modalId}
-          onMouseDown={(e) => {
-            isCloseOnBackdropClick && handleCloseModal(i, e);
-          }}
-        >
-          <div
-            className={`${className} backdrop_modal_manager ${
-              isHaveBackdrop && isCloseOnBackdropClick && "backdrop"
-            }`}
-          >
+          return (
             <div
-              ref={(ref) => {
-                refReducer(i, ref);
-              }}
+              key={item.modalId}
+              className={`modal-manager backdrop_modal_manager ${backdropClassName}`}
             >
-              <Modal {...item.data} />
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCloseModal(i);
+                }}
+                className="backdrop"
+              />
+              {/* // h-full modal not close */}
+              <div className={`${className} modal_paper`}>
+                <div
+                  ref={(ref) => {
+                    refReducer(i, ref);
+                  }}
+                >
+                  <Modal {...item.data} />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      );
-    })
+          );
+        })}
+    </>
   );
 };
 
