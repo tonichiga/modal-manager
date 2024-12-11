@@ -54,7 +54,7 @@ export class ModalManager extends Manager {
   }
 
   close<T>(position?: T) {
-    this.emitter.emit(constants.CLOSE, position);
+    this.emitter.emit(constants.CLOSE, position ?? this.queue?.length - 1);
     const closedModalName = this.queue[this.queue.length - 1];
     this.queue.pop();
 

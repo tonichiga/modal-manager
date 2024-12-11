@@ -54,11 +54,11 @@ var ModalManager = /** @class */ (function (_super) {
         }));
     };
     ModalManager.prototype.close = function (position) {
-        var _a;
-        this.emitter.emit(exports.constants.CLOSE, position);
+        var _a, _b;
+        this.emitter.emit(exports.constants.CLOSE, position !== null && position !== void 0 ? position : ((_a = this.queue) === null || _a === void 0 ? void 0 : _a.length) - 1);
         var closedModalName = this.queue[this.queue.length - 1];
         this.queue.pop();
-        (_a = this._openModalStateCallback) === null || _a === void 0 ? void 0 : _a.call(this, this.getQueueState({
+        (_b = this._openModalStateCallback) === null || _b === void 0 ? void 0 : _b.call(this, this.getQueueState({
             queue: this.queue,
             closedModalName: closedModalName,
         }));
