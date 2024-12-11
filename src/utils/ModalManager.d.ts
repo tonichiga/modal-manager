@@ -17,7 +17,7 @@ interface ModalState {
 interface Options {
     showBackdrop?: boolean;
     extraClass?: string;
-    openMinimized?: boolean;
+    openToHeight?: string;
 }
 export declare class ModalManager extends Manager {
     queue: string[];
