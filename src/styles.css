@@ -45,4 +45,5 @@
   position: relative;
   z-index: 1001;
   animation: bg_opacity_scale 150ms ease-in-out forwards;
+  width: 100%;
 }
