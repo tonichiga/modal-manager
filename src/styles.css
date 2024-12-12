@@ -16,6 +16,24 @@
   }
 }
 
+@keyframes bg_opacity_out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes bg_scale_out {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0.8);
+  }
+}
+
 .modal-manager.backdrop_modal_manager {
   display: flex;
   justify-content: center;
@@ -46,4 +64,12 @@
   z-index: 1001;
   animation: bg_opacity_scale 150ms ease-in-out forwards;
   width: 100%;
+}
+
+.modal-manager.closing .backdrop {
+  animation: bg_opacity_out 150ms ease-in-out forwards;
+}
+
+.modal-manager.closing .modal_paper {
+  animation: bg_scale_out 150ms ease-in-out forwards;
 }
