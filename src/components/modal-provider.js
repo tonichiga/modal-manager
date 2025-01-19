@@ -82,6 +82,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importStar(require("react"));
 var ModalManager_1 = __importStar(require("../utils/ModalManager"));
+var react_dom_1 = require("react-dom");
 var ModalProvider = function (_a) {
     var modalList = _a.modalList, isOverflow = _a.isOverflow, className = _a.className, backdropClassName = _a.backdropClassName, onModalStateChange = _a.onModalStateChange;
     var _b = (0, react_1.useState)([]), data = _b[0], setData = _b[1];
@@ -118,7 +119,9 @@ var ModalProvider = function (_a) {
         var handleClose = function (position) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, applyCloseStyles(position)];
+                    case 0:
+                        console.log("position", position);
+                        return [4 /*yield*/, applyCloseStyles(position)];
                     case 1:
                         _a.sent();
                         if (isOverflow) {
@@ -176,7 +179,8 @@ var ModalProvider = function (_a) {
     var refReducer = function (index, value) {
         modalRef.current[index] = value;
     };
-    return (react_1.default.createElement(react_1.default.Fragment, null, data.length !== 0 &&
+    var body = document.body;
+    (0, react_dom_1.createPortal)(react_1.default.createElement(react_1.default.Fragment, null, data.length !== 0 &&
         data.map(function (item, i) {
             var Modal = activeModals[i] || (function () { return react_1.default.createElement(react_1.default.Fragment, null); });
             return (react_1.default.createElement("div", { "data-index": i, key: item.modalId, className: "modal-manager backdrop_modal_manager ".concat(backdropClassName) },
@@ -189,6 +193,7 @@ var ModalProvider = function (_a) {
                             refReducer(i, ref);
                         } },
                         react_1.default.createElement(Modal, __assign({}, item.data))))));
-        })));
+        })), body);
+    return null;
 };
 exports.default = ModalProvider;

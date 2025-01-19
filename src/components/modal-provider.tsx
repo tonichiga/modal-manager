@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import modal, { constants } from "../utils/ModalManager";
+import { createPortal } from "react-dom";
 
 export type ModalList = { [key: string]: React.ComponentType };
 
@@ -62,6 +63,7 @@ const ModalProvider = ({
     };
 
     const handleClose = async (position: number | string) => {
+      console.log("position", position);
       await applyCloseStyles(position as number);
       if (isOverflow) {
         if (typeof document !== "undefined") {
@@ -124,7 +126,8 @@ const ModalProvider = ({
     modalRef.current[index] = value;
   };
 
-  return (
+  const body = document.body;
+  createPortal(
     <>
       {data.length !== 0 &&
         data.map((item, i) => {
@@ -156,8 +159,11 @@ const ModalProvider = ({
             </div>
           );
         })}
-    </>
+    </>,
+    body
   );
+
+  return null;
 };
 
 export default ModalProvider;
