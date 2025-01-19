@@ -12,5 +12,5 @@ interface ModalProviderProps {
 type TData = {
     [key: string]: any;
 };
-declare const ModalProvider: ({ modalList, isOverflow, className, backdropClassName, onModalStateChange, }: ModalProviderProps) => null;
+declare const ModalProvider: ({ modalList, isOverflow, className, backdropClassName, onModalStateChange, }: ModalProviderProps) => React.JSX.Element;
 export default ModalProvider;
