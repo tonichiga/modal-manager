@@ -126,6 +126,8 @@ const ModalProvider = ({
     modalRef.current[index] = value;
   };
 
+  if (typeof window === "undefined") return null;
+
   const body = document.body;
   createPortal(
     <>

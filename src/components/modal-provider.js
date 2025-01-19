@@ -179,6 +179,8 @@ var ModalProvider = function (_a) {
     var refReducer = function (index, value) {
         modalRef.current[index] = value;
     };
+    if (typeof window === "undefined")
+        return null;
     var body = document.body;
     (0, react_dom_1.createPortal)(react_1.default.createElement(react_1.default.Fragment, null, data.length !== 0 &&
         data.map(function (item, i) {
