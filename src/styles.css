@@ -1,9 +1,9 @@
 @keyframes bg_opacity_scale {
   from {
-    transform: scale(0.8);
+    transform: scale(0.8) translateY(-50%) translateX(-50%);
   }
   to {
-    transform: scale(1);
+    transform: scale(1) translateY(-50%) translateX(-50%);
   }
 }
 
@@ -16,62 +16,38 @@
   }
 }
 
-@keyframes bg_opacity_out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
+/*  */
+
+.modal_container {
+  position: relative;
+  z-index: 10000;
 }
 
-@keyframes bg_scale_out {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-}
-
-.modal-manager.backdrop_modal_manager {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.modal_backdrop {
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
-  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: bg_opacity 0.3s ease forwards;
+}
+
+.modal_paper {
   position: fixed;
   z-index: 1000;
+  width: max-content;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  top: 50%;
+  left: 50%;
+  transform-origin: left;
+  animation: bg_opacity_scale 0.3s ease forwards;
 }
 
-.modal-manager .backdrop {
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  animation: bg_opacity 150ms ease-in-out forwards;
-}
-
-.modal-manager .modal_paper {
-  position: relative;
-  z-index: 1001;
-  animation: bg_opacity_scale 150ms ease-in-out forwards;
-  width: 100%;
-}
-
-.modal-manager.closing .backdrop {
-  animation: bg_opacity_out 150ms ease-in-out forwards;
-}
-
-.modal-manager.closing .modal_paper {
-  animation: bg_scale_out 150ms ease-in-out forwards;
+.modal_closing {
+  animation: bg_opacity 150ms ease reverse forwards;
 }

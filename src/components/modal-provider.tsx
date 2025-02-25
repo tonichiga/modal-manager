@@ -1,161 +1,175 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import modal, { constants } from "../utils/ModalManager";
+import { modal, constants } from "../utils/ModalManager";
 
-export type ModalList = { [key: string]: React.ComponentType };
+export type ModalList = { [key: string]: React.ComponentType<any> };
 
 interface ModalProviderProps {
-  modalList: any;
+  modalList: ModalList;
   isOverflow?: boolean;
   className?: string;
   backdropClassName?: string;
   onModalStateChange?: (
     modalState: boolean,
-    data: TData[],
+    data: ModalData[],
     names: string[]
   ) => void;
 }
 
-type TData = { [key: string]: any };
+type ModalData = {
+  id: string;
+  name: string;
+  payload: any;
+  options?: any;
+};
 
-const ModalProvider = ({
+const ModalProvider: React.FC<ModalProviderProps> = ({
   modalList,
-  isOverflow,
-  className,
-  backdropClassName,
+  isOverflow = true,
+  className = "",
+  backdropClassName = "",
   onModalStateChange,
-}: ModalProviderProps) => {
-  const [data, setData] = useState<TData[]>([]);
-  const [names, setNames] = useState<string[]>([]);
-  const modalRef = useRef<any[]>([]);
+}) => {
+  const [modals, setModals] = useState<ModalData[]>([]);
+  const modalRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
 
-  const applyCloseStyles = (index: number) => {
+  const applyCloseStyles = (modalIndex: number): Promise<boolean> => {
     return new Promise((resolve) => {
-      const modal = document.querySelector(
-        `[data-index="${index}"]`
+      const modalElement = document.querySelector(
+        `[data-modal-index="${modalIndex}"]`
       ) as HTMLElement;
-      if (!modal) return;
-      modal.classList.add("closing");
+
+      if (!modalElement) {
+        resolve(false);
+        return;
+      }
+
+      modalElement.classList.add("modal_closing");
       setTimeout(() => {
         resolve(true);
-      }, 150);
+      }, 300);
     });
   };
 
   useEffect(() => {
-    if (!onModalStateChange) return;
-    const modalState = data.length !== 0;
-    onModalStateChange(modalState, data, names);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, names]);
+    if (onModalStateChange && modals.length >= 0) {
+      const data = modals.map((modal) => modal.payload);
+      const names = modals.map((modal) => modal.name);
+      onModalStateChange(modals.length > 0, data, names);
+    }
+  }, [modals, onModalStateChange]);
 
   useEffect(() => {
-    const handleOpenModal = (name: string, data: TData) => {
-      setData((prev: TData[]) => [...prev, data]);
-      setNames((prev: string[]) => [...prev, name]);
+    // Toggle body overflow
+    if (typeof document !== "undefined") {
+      document.body.style.overflow =
+        isOverflow && modals.length > 0 ? "hidden" : "";
+    }
+  }, [modals.length, isOverflow]);
 
-      if (isOverflow) {
-        if (typeof document === "undefined") return;
-        document.body.style.overflow = "hidden";
-      }
+  useEffect(() => {
+    const handleOpenModal = (name: string, payload: any, options?: any) => {
+      const id = `modal-${payload.modalId || Date.now()}-${Math.random()
+        .toString(36)
+        .substring(2, 9)}`;
+
+      setModals((prevModals) => [
+        ...prevModals,
+        { id, name, payload, options },
+      ]);
     };
 
     const handleClose = async (position: number | string) => {
-      await applyCloseStyles(position as number);
-      if (isOverflow) {
-        if (typeof document !== "undefined") {
-          document.body.style.overflow = "";
+      console.log("POS", position);
+      if (position === "all") {
+        // Закрыть все модальные окна с анимацией
+        for (let i = modals.length - 1; i >= 0; i--) {
+          await applyCloseStyles(i);
+        }
+        setModals([]);
+        return;
+      }
+
+      if (typeof position === "number") {
+        // Обработка числовых позиций
+        let indexToRemove: number = position;
+
+        if (indexToRemove < 0 || indexToRemove >= modals.length) {
+          // Если индекс невалидный, закрываем последний
+          indexToRemove = modals.length - 1;
+        }
+
+        if (indexToRemove >= 0 && indexToRemove < modals.length) {
+          await applyCloseStyles(indexToRemove);
+
+          setModals((prevModals) =>
+            prevModals.filter((_, index) => index !== indexToRemove)
+          );
         }
       }
-
-      if (position === "all") {
-        setData([]);
-        setNames([]);
-        return;
-      }
-
-      if (position === -1) {
-        // remove last
-        setData((prev: TData[]) =>
-          prev.filter((_, index) => index !== prev.length - 1)
-        );
-        setNames((prev: string[]) =>
-          prev.filter((_, index) => index !== prev.length - 1)
-        );
-        return;
-      }
-
-      if (position === 0) {
-        // remove first
-        setData((prev: TData[]) => prev.filter((_, index) => index !== 0));
-        setNames((prev: string[]) => prev.filter((_, index) => index !== 0));
-        return;
-      }
-
-      // remove position index
-      setData((prev: TData[]) =>
-        prev.filter((_, index) => index !== prev.length - 1)
-      );
-      setNames((prev: string[]) =>
-        prev.filter((_, index) => index !== prev.length - 1)
-      );
     };
 
-    modal.addEventListener(constants.CHANGE, handleOpenModal);
-    modal.addEventListener(constants.CLOSE, handleClose);
+    // Добавляем обработчики событий
+    modal.emitter.on(constants.CHANGE, handleOpenModal);
+    modal.emitter.on(constants.CLOSE, handleClose);
+
     return () => {
-      modal.removeEventListener(constants.CHANGE, handleOpenModal);
-      modal.removeEventListener(constants.CLOSE, handleClose);
+      // Удаляем обработчики при размонтировании
+      modal.emitter.off(constants.CHANGE, handleOpenModal);
+      modal.emitter.off(constants.CLOSE, handleClose);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const activeModals = names.map((name: string) => {
-    const Component = modalList[name] || (() => <></>);
-    return Component;
-  });
+  }, [modals]);
 
   const handleCloseModal = (index: number) => {
     modal.close(index);
   };
 
-  const refReducer = (index: number, value: any) => {
-    modalRef.current[index] = value;
+  const saveModalRef = (id: string, ref: HTMLDivElement | null) => {
+    if (ref) {
+      modalRefs.current.set(id, ref);
+    } else {
+      modalRefs.current.delete(id);
+    }
+  };
+
+  // Предотвратить всплытие клика для модального контента
+  const stopPropagation = (e: React.MouseEvent) => {
+    e.stopPropagation();
   };
 
   return (
     <>
-      {data.length !== 0 &&
-        data.map((item, i) => {
-          const Modal = activeModals[i] || (() => <></>);
+      {modals.map((modalItem, index) => {
+        const { name, payload, options, id } = modalItem;
+        const Modal =
+          modalList[name] || (() => <div>Modal not found: {name}</div>);
+        const hideBackdrop = options?.hideBackdrop || false;
+        const extraClass = options?.extraClass || "";
 
-          return (
-            <div
-              data-index={i}
-              key={item.modalId}
-              className={`modal-manager backdrop_modal_manager ${backdropClassName}`}
-            >
+        return (
+          <div
+            key={id}
+            data-modal-id={id}
+            data-modal-index={index}
+            className={`modal_container ${extraClass}`}
+          >
+            {!hideBackdrop && (
               <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleCloseModal(i);
-                }}
-                className="backdrop"
+                onClick={() => handleCloseModal(index)}
+                className="modal_backdrop"
               />
-              {/* // h-full modal not close */}
-              <div className={`${className} modal_paper`}>
-                <div
-                  ref={(ref) => {
-                    refReducer(i, ref);
-                  }}
-                >
-                  <Modal {...item.data} />
-                </div>
-              </div>
+            )}
+            <div
+              className={`${className} modal_paper`}
+              onClick={stopPropagation}
+              ref={(ref) => saveModalRef(id, ref)}
+            >
+              <Modal {...(payload.data || {})} modalIndex={index} />
             </div>
-          );
-        })}
+          </div>
+        );
+      })}
     </>
   );
 };

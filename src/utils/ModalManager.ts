@@ -30,13 +30,13 @@ export interface Options {
 
 export class ModalManager extends Manager {
   queue: string[] = [];
+  modalData: Map<string, any> = new Map(); // Сохраняем данные для каждого модального окна
   _openModalStateCallback: null | ((props: ModalState) => void);
 
   constructor() {
     super();
     this.create = this.create.bind(this);
     this.call = this.call.bind(this);
-    this.close = this.close.bind(this);
     this._openModalStateCallback = null;
   }
 
@@ -45,22 +45,35 @@ export class ModalManager extends Manager {
     payload: { modalId: number; data?: T },
     options?: Options
   ) {
-    this.name = name;
-    this.data = payload;
-    this.emitter.emit(constants.CHANGE, this.name, this.data, options);
+    const modalId = String(payload.modalId);
+    this.modalData.set(modalId, { name, payload, options });
+
+    // Используем setTimeout для обеспечения асинхронного выполнения
+    setTimeout(() => {
+      this.emitter.emit(constants.CHANGE, name, payload, options);
+    }, 0);
+
+    return modalId;
   }
 
   call<T>(name: string, data?: T, options?: Options) {
-    this.create<T>(name, { modalId: uniqueID(), data }, options);
-    const lastOpenedModal = name;
-    this.queue.push(name);
+    const modalId = uniqueID();
+    const id = this.create<T>(name, { modalId, data }, options);
 
-    this._openModalStateCallback?.(
-      this.getQueueState({
-        queue: this.queue,
-        lastOpenedModal,
-      })
-    );
+    const lastOpenedModal = name;
+    this.queue.push(id);
+
+    // Используем setTimeout чтобы дать React возможность обновить DOM
+    setTimeout(() => {
+      this._openModalStateCallback?.(
+        this.getQueueState({
+          queue: this.queue,
+          lastOpenedModal,
+        })
+      );
+    }, 0);
+
+    return id;
   }
 
   close<T>(position?: T) {
@@ -88,7 +101,31 @@ export class ModalManager extends Manager {
   onOpenModalState(callback: (state: ModalState) => void) {
     this._openModalStateCallback = callback;
   }
+
+  // Получить количество открытых модальных окон
+  getModalCount() {
+    return this.queue.length;
+  }
+
+  // Метод для закрытия всех модальных окон
+  closeAll() {
+    if (this.queue.length === 0) return;
+
+    setTimeout(() => {
+      this.emitter.emit(constants.CLOSE, "all");
+      this.queue = [];
+      this.modalData.clear();
+
+      this._openModalStateCallback?.(
+        this.getQueueState({
+          queue: this.queue,
+          closedModalName: undefined,
+        })
+      );
+    }, 0);
+  }
 }
 
 const modal = new ModalManager();
+export { modal };
 export default modal;
