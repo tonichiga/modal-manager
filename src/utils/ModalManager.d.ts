@@ -28,8 +28,8 @@ export declare class ModalManager extends Manager {
         modalId: number;
         data?: T;
     }, options?: Options): string;
-    call<T>(name: string, data?: T, options?: Options): string;
-    close<T>(position?: T): void;
+    call: <T>(name: string, data?: T | undefined, options?: Options) => string;
+    close: <T>(position?: T | undefined) => void;
     getQueueState({ queue, closedModalName, lastOpenedModal }: QueueState): {
         isHaveOpenModals: boolean;
         queue: string[];

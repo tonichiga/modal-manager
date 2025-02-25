@@ -81,7 +81,6 @@ const ModalProvider: React.FC<ModalProviderProps> = ({
     };
 
     const handleClose = async (position: number | string) => {
-      console.log("POS", position);
       if (position === "all") {
         // Закрыть все модальные окна с анимацией
         for (let i = modals.length - 1; i >= 0; i--) {
@@ -91,22 +90,24 @@ const ModalProvider: React.FC<ModalProviderProps> = ({
         return;
       }
 
-      if (typeof position === "number") {
-        // Обработка числовых позиций
-        let indexToRemove: number = position;
+      // Обработка числовых позиций
+      let indexToRemove: number | undefined = position as number | undefined;
 
-        if (indexToRemove < 0 || indexToRemove >= modals.length) {
-          // Если индекс невалидный, закрываем последний
-          indexToRemove = modals.length - 1;
-        }
+      if (
+        !indexToRemove ||
+        indexToRemove < 0 ||
+        indexToRemove >= modals.length
+      ) {
+        // Если индекс невалидный, закрываем последний
+        indexToRemove = modals.length - 1;
+      }
 
-        if (indexToRemove >= 0 && indexToRemove < modals.length) {
-          await applyCloseStyles(indexToRemove);
+      if (indexToRemove >= 0 && indexToRemove < modals.length) {
+        await applyCloseStyles(indexToRemove);
 
-          setModals((prevModals) =>
-            prevModals.filter((_, index) => index !== indexToRemove)
-          );
-        }
+        setModals((prevModals) =>
+          prevModals.filter((_, index) => index !== indexToRemove)
+        );
       }
     };
 

@@ -33,8 +33,33 @@ var ModalManager = /** @class */ (function (_super) {
         var _this = _super.call(this) || this;
         _this.queue = [];
         _this.modalData = new Map(); // Сохраняем данные для каждого модального окна
+        _this.call = function (name, data, options) {
+            var modalId = uniqueID();
+            var id = _this.create(name, { modalId: modalId, data: data }, options);
+            var lastOpenedModal = name;
+            _this.queue.push(id);
+            // Используем setTimeout чтобы дать React возможность обновить DOM
+            setTimeout(function () {
+                var _a;
+                (_a = _this._openModalStateCallback) === null || _a === void 0 ? void 0 : _a.call(_this, _this.getQueueState({
+                    queue: _this.queue,
+                    lastOpenedModal: lastOpenedModal,
+                }));
+            }, 0);
+            return id;
+        };
+        _this.close = function (position) {
+            var _a, _b;
+            _this.emitter.emit(exports.constants.CLOSE, position !== null && position !== void 0 ? position : ((_a = _this.queue) === null || _a === void 0 ? void 0 : _a.length) - 1);
+            var closedModalName = _this.queue[_this.queue.length - 1];
+            _this.queue.pop();
+            (_b = _this._openModalStateCallback) === null || _b === void 0 ? void 0 : _b.call(_this, _this.getQueueState({
+                queue: _this.queue,
+                closedModalName: closedModalName,
+            }));
+        };
         _this.create = _this.create.bind(_this);
-        _this.call = _this.call.bind(_this);
+        // this.call = this.call.bind(this);
         _this._openModalStateCallback = null;
         return _this;
     }
@@ -47,32 +72,6 @@ var ModalManager = /** @class */ (function (_super) {
             _this.emitter.emit(exports.constants.CHANGE, name, payload, options);
         }, 0);
         return modalId;
-    };
-    ModalManager.prototype.call = function (name, data, options) {
-        var _this = this;
-        var modalId = uniqueID();
-        var id = this.create(name, { modalId: modalId, data: data }, options);
-        var lastOpenedModal = name;
-        this.queue.push(id);
-        // Используем setTimeout чтобы дать React возможность обновить DOM
-        setTimeout(function () {
-            var _a;
-            (_a = _this._openModalStateCallback) === null || _a === void 0 ? void 0 : _a.call(_this, _this.getQueueState({
-                queue: _this.queue,
-                lastOpenedModal: lastOpenedModal,
-            }));
-        }, 0);
-        return id;
-    };
-    ModalManager.prototype.close = function (position) {
-        var _a, _b;
-        this.emitter.emit(exports.constants.CLOSE, position !== null && position !== void 0 ? position : ((_a = this.queue) === null || _a === void 0 ? void 0 : _a.length) - 1);
-        var closedModalName = this.queue[this.queue.length - 1];
-        this.queue.pop();
-        (_b = this._openModalStateCallback) === null || _b === void 0 ? void 0 : _b.call(this, this.getQueueState({
-            queue: this.queue,
-            closedModalName: closedModalName,
-        }));
     };
     ModalManager.prototype.getQueueState = function (_a) {
         var queue = _a.queue, closedModalName = _a.closedModalName, lastOpenedModal = _a.lastOpenedModal;
