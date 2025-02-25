@@ -127,7 +127,6 @@ var ModalProvider = function (_a) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log("handleClose", position);
                         if (!(position === "all")) return [3 /*break*/, 5];
                         i = modals.length - 1;
                         _a.label = 1;

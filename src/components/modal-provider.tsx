@@ -81,7 +81,6 @@ const ModalProvider: React.FC<ModalProviderProps> = ({
     };
 
     const handleClose = async (position: number | string) => {
-      console.log("handleClose", position);
       if (position === "all") {
         // Закрыть все модальные окна с анимацией
         for (let i = modals.length - 1; i >= 0; i--) {
