@@ -18,7 +18,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ModalManager = exports.constants = void 0;
+exports.modal = exports.ModalManager = exports.constants = void 0;
 var Manager_1 = __importDefault(require("./Manager"));
 function uniqueID() {
     return Math.floor(Math.random() * Date.now());
@@ -32,26 +32,37 @@ var ModalManager = /** @class */ (function (_super) {
     function ModalManager() {
         var _this = _super.call(this) || this;
         _this.queue = [];
+        _this.modalData = new Map(); // Сохраняем данные для каждого модального окна
         _this.create = _this.create.bind(_this);
         _this.call = _this.call.bind(_this);
-        _this.close = _this.close.bind(_this);
         _this._openModalStateCallback = null;
         return _this;
     }
     ModalManager.prototype.create = function (name, payload, options) {
-        this.name = name;
-        this.data = payload;
-        this.emitter.emit(exports.constants.CHANGE, this.name, this.data, options);
+        var _this = this;
+        var modalId = String(payload.modalId);
+        this.modalData.set(modalId, { name: name, payload: payload, options: options });
+        // Используем setTimeout для обеспечения асинхронного выполнения
+        setTimeout(function () {
+            _this.emitter.emit(exports.constants.CHANGE, name, payload, options);
+        }, 0);
+        return modalId;
     };
     ModalManager.prototype.call = function (name, data, options) {
-        var _a;
-        this.create(name, { modalId: uniqueID(), data: data }, options);
+        var _this = this;
+        var modalId = uniqueID();
+        var id = this.create(name, { modalId: modalId, data: data }, options);
         var lastOpenedModal = name;
-        this.queue.push(name);
-        (_a = this._openModalStateCallback) === null || _a === void 0 ? void 0 : _a.call(this, this.getQueueState({
-            queue: this.queue,
-            lastOpenedModal: lastOpenedModal,
-        }));
+        this.queue.push(id);
+        // Используем setTimeout чтобы дать React возможность обновить DOM
+        setTimeout(function () {
+            var _a;
+            (_a = _this._openModalStateCallback) === null || _a === void 0 ? void 0 : _a.call(_this, _this.getQueueState({
+                queue: _this.queue,
+                lastOpenedModal: lastOpenedModal,
+            }));
+        }, 0);
+        return id;
     };
     ModalManager.prototype.close = function (position) {
         var _a, _b;
@@ -75,8 +86,29 @@ var ModalManager = /** @class */ (function (_super) {
     ModalManager.prototype.onOpenModalState = function (callback) {
         this._openModalStateCallback = callback;
     };
+    // Получить количество открытых модальных окон
+    ModalManager.prototype.getModalCount = function () {
+        return this.queue.length;
+    };
+    // Метод для закрытия всех модальных окон
+    ModalManager.prototype.closeAll = function () {
+        var _this = this;
+        if (this.queue.length === 0)
+            return;
+        setTimeout(function () {
+            var _a;
+            _this.emitter.emit(exports.constants.CLOSE, "all");
+            _this.queue = [];
+            _this.modalData.clear();
+            (_a = _this._openModalStateCallback) === null || _a === void 0 ? void 0 : _a.call(_this, _this.getQueueState({
+                queue: _this.queue,
+                closedModalName: undefined,
+            }));
+        }, 0);
+    };
     return ModalManager;
 }(Manager_1.default));
 exports.ModalManager = ModalManager;
 var modal = new ModalManager();
+exports.modal = modal;
 exports.default = modal;

@@ -1,16 +1,19 @@
 import React from "react";
 export type ModalList = {
-    [key: string]: React.ComponentType;
+    [key: string]: React.ComponentType<any>;
 };
 interface ModalProviderProps {
-    modalList: any;
+    modalList: ModalList;
     isOverflow?: boolean;
     className?: string;
     backdropClassName?: string;
-    onModalStateChange?: (modalState: boolean, data: TData[], names: string[]) => void;
+    onModalStateChange?: (modalState: boolean, data: ModalData[], names: string[]) => void;
 }
-type TData = {
-    [key: string]: any;
+type ModalData = {
+    id: string;
+    name: string;
+    payload: any;
+    options?: any;
 };
-declare const ModalProvider: ({ modalList, isOverflow, className, backdropClassName, onModalStateChange, }: ModalProviderProps) => React.JSX.Element;
+declare const ModalProvider: React.FC<ModalProviderProps>;
 export default ModalProvider;

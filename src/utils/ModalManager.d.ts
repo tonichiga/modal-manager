@@ -21,13 +21,14 @@ export interface Options {
 }
 export declare class ModalManager extends Manager {
     queue: string[];
+    modalData: Map<string, any>;
     _openModalStateCallback: null | ((props: ModalState) => void);
     constructor();
     create<T>(name: string, payload: {
         modalId: number;
         data?: T;
-    }, options?: Options): void;
-    call<T>(name: string, data?: T, options?: Options): void;
+    }, options?: Options): string;
+    call<T>(name: string, data?: T, options?: Options): string;
     close<T>(position?: T): void;
     getQueueState({ queue, closedModalName, lastOpenedModal }: QueueState): {
         isHaveOpenModals: boolean;
@@ -36,6 +37,9 @@ export declare class ModalManager extends Manager {
         closedModalName: string | undefined;
     };
     onOpenModalState(callback: (state: ModalState) => void): void;
+    getModalCount(): number;
+    closeAll(): void;
 }
 declare const modal: ModalManager;
+export { modal };
 export default modal;
