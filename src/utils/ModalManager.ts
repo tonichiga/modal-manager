@@ -36,7 +36,7 @@ export class ModalManager extends Manager {
   constructor() {
     super();
     this.create = this.create.bind(this);
-    this.call = this.call.bind(this);
+    // this.call = this.call.bind(this);
     this._openModalStateCallback = null;
   }
 
@@ -56,7 +56,7 @@ export class ModalManager extends Manager {
     return modalId;
   }
 
-  call<T>(name: string, data?: T, options?: Options) {
+  call = <T>(name: string, data?: T, options?: Options) => {
     const modalId = uniqueID();
     const id = this.create<T>(name, { modalId, data }, options);
 
@@ -74,9 +74,9 @@ export class ModalManager extends Manager {
     }, 0);
 
     return id;
-  }
+  };
 
-  close<T>(position?: T) {
+  close = <T>(position?: T) => {
     this.emitter.emit(constants.CLOSE, position ?? this.queue?.length - 1);
     const closedModalName = this.queue[this.queue.length - 1];
     this.queue.pop();
@@ -87,7 +87,7 @@ export class ModalManager extends Manager {
         closedModalName,
       })
     );
-  }
+  };
 
   getQueueState({ queue, closedModalName, lastOpenedModal }: QueueState) {
     return {
