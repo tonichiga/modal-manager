@@ -123,11 +123,11 @@ var ModalProvider = function (_a) {
             ], false); });
         };
         var handleClose = function (position) { return __awaiter(void 0, void 0, void 0, function () {
-            var i, indexToRemove_1;
+            var i, indexToRemove;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log("POS", position);
+                        console.log("handleClose", position);
                         if (!(position === "all")) return [3 /*break*/, 5];
                         i = modals.length - 1;
                         _a.label = 1;
@@ -144,18 +144,19 @@ var ModalProvider = function (_a) {
                         setModals([]);
                         return [2 /*return*/];
                     case 5:
-                        if (!(typeof position === "number")) return [3 /*break*/, 7];
-                        indexToRemove_1 = position;
-                        if (indexToRemove_1 < 0 || indexToRemove_1 >= modals.length) {
+                        indexToRemove = position;
+                        if (typeof indexToRemove !== "number" ||
+                            indexToRemove < 0 ||
+                            indexToRemove >= modals.length) {
                             // Если индекс невалидный, закрываем последний
-                            indexToRemove_1 = modals.length - 1;
+                            indexToRemove = modals.length - 1;
                         }
-                        if (!(indexToRemove_1 >= 0 && indexToRemove_1 < modals.length)) return [3 /*break*/, 7];
-                        return [4 /*yield*/, applyCloseStyles(indexToRemove_1)];
+                        if (!(indexToRemove >= 0 && indexToRemove < modals.length)) return [3 /*break*/, 7];
+                        return [4 /*yield*/, applyCloseStyles(indexToRemove)];
                     case 6:
                         _a.sent();
                         setModals(function (prevModals) {
-                            return prevModals.filter(function (_, index) { return index !== indexToRemove_1; });
+                            return prevModals.filter(function (_, index) { return index !== indexToRemove; });
                         });
                         _a.label = 7;
                     case 7: return [2 /*return*/];

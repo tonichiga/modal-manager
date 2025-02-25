@@ -81,6 +81,7 @@ const ModalProvider: React.FC<ModalProviderProps> = ({
     };
 
     const handleClose = async (position: number | string) => {
+      console.log("handleClose", position);
       if (position === "all") {
         // Закрыть все модальные окна с анимацией
         for (let i = modals.length - 1; i >= 0; i--) {
@@ -91,10 +92,10 @@ const ModalProvider: React.FC<ModalProviderProps> = ({
       }
 
       // Обработка числовых позиций
-      let indexToRemove: number | undefined = position as number | undefined;
+      let indexToRemove: number = position as number;
 
       if (
-        !indexToRemove ||
+        typeof indexToRemove !== "number" ||
         indexToRemove < 0 ||
         indexToRemove >= modals.length
       ) {
