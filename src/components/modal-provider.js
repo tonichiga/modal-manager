@@ -118,7 +118,9 @@ var ModalProvider = function (_a) {
         var handleClose = function (position) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, applyCloseStyles(position)];
+                    case 0:
+                        console.log("position", position);
+                        return [4 /*yield*/, applyCloseStyles(position)];
                     case 1:
                         _a.sent();
                         if (isOverflow) {
