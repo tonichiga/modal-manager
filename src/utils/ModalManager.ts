@@ -26,11 +26,12 @@ export interface Options {
   hideBackdrop?: boolean;
   extraClass?: string;
   openMinimized?: boolean;
+  onClickBackdrop?: (cb: () => void) => void;
 }
 
 export class ModalManager extends Manager {
   queue: string[] = [];
-  modalData: Map<string, any> = new Map(); // Сохраняем данные для каждого модального окна
+  modalData: Map<string, any> = new Map();
   _openModalStateCallback: null | ((props: ModalState) => void);
 
   constructor() {

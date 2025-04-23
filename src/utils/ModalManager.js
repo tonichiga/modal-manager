@@ -32,7 +32,7 @@ var ModalManager = /** @class */ (function (_super) {
     function ModalManager() {
         var _this = _super.call(this) || this;
         _this.queue = [];
-        _this.modalData = new Map(); // Сохраняем данные для каждого модального окна
+        _this.modalData = new Map();
         _this.call = function (name, data, options) {
             var modalId = uniqueID();
             var id = _this.create(name, { modalId: modalId, data: data }, options);

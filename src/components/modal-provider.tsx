@@ -10,6 +10,7 @@ interface ModalProviderProps {
   isOverflow?: boolean;
   className?: string;
   backdropClassName?: string;
+  onClickBackdrop?: (cb: any) => void;
   onModalStateChange?: (
     modalState: boolean,
     data: ModalData[],
@@ -142,7 +143,7 @@ const ModalProvider: React.FC<ModalProviderProps> = ({
   return (
     <>
       {modals.map((modalItem, index) => {
-        const { name, payload, options, id } = modalItem;
+        const { name, payload, options, id, ...props } = modalItem;
         const Modal =
           modalList[name] || (() => <div>Modal not found: {name}</div>);
         const hideBackdrop = options?.hideBackdrop || false;
@@ -157,7 +158,11 @@ const ModalProvider: React.FC<ModalProviderProps> = ({
           >
             {!hideBackdrop && (
               <div
-                onClick={() => handleCloseModal(index)}
+                onClick={() => {
+                  options?.onClickBackdrop
+                    ? options?.onClickBackdrop?.(() => handleCloseModal(index))
+                    : handleCloseModal(index);
+                }}
                 className="modal_backdrop"
               />
             )}

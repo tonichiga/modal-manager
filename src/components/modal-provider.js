@@ -70,6 +70,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
@@ -187,14 +198,19 @@ var ModalProvider = function (_a) {
         e.stopPropagation();
     };
     return (react_1.default.createElement(react_1.default.Fragment, null, modals.map(function (modalItem, index) {
-        var name = modalItem.name, payload = modalItem.payload, options = modalItem.options, id = modalItem.id;
+        var name = modalItem.name, payload = modalItem.payload, options = modalItem.options, id = modalItem.id, props = __rest(modalItem, ["name", "payload", "options", "id"]);
         var Modal = modalList[name] || (function () { return react_1.default.createElement("div", null,
             "Modal not found: ",
             name); });
         var hideBackdrop = (options === null || options === void 0 ? void 0 : options.hideBackdrop) || false;
         var extraClass = (options === null || options === void 0 ? void 0 : options.extraClass) || "";
         return (react_1.default.createElement("div", { key: id, "data-modal-id": id, "data-modal-index": index, className: "modal_container ".concat(extraClass) },
-            !hideBackdrop && (react_1.default.createElement("div", { onClick: function () { return handleCloseModal(index); }, className: "modal_backdrop" })),
+            !hideBackdrop && (react_1.default.createElement("div", { onClick: function () {
+                    var _a;
+                    (options === null || options === void 0 ? void 0 : options.onClickBackdrop)
+                        ? (_a = options === null || options === void 0 ? void 0 : options.onClickBackdrop) === null || _a === void 0 ? void 0 : _a.call(options, function () { return handleCloseModal(index); })
+                        : handleCloseModal(index);
+                }, className: "modal_backdrop" })),
             react_1.default.createElement("div", { className: "".concat(className, " modal_paper"), onClick: stopPropagation, ref: function (ref) { return saveModalRef(id, ref); } },
                 react_1.default.createElement(Modal, __assign({}, (payload.data || {}), { modalIndex: index })))));
     })));

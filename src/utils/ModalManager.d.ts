@@ -18,6 +18,7 @@ export interface Options {
     hideBackdrop?: boolean;
     extraClass?: string;
     openMinimized?: boolean;
+    onClickBackdrop?: (cb: () => void) => void;
 }
 export declare class ModalManager extends Manager {
     queue: string[];

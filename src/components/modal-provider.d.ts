@@ -7,6 +7,7 @@ interface ModalProviderProps {
     isOverflow?: boolean;
     className?: string;
     backdropClassName?: string;
+    onClickBackdrop?: (cb: any) => void;
     onModalStateChange?: (modalState: boolean, data: ModalData[], names: string[]) => void;
 }
 type ModalData = {
